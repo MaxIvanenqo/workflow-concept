@@ -14,7 +14,7 @@ env:
   SERVER_USERNAME: "MaxIvanenqo"
   MAVEN_RESOLVE_RANGES_OPTS: -DallowMajorUpdates=false -DallowMinorUpdates=false -DallowIncrementalUpdates=true -DallowSnapshots=false -DgenerateBackupPoms=false
   MAVEN_SET_VERSION_OPTS: -DremoveSnapshot=true -DprocessParent=true -DprocessAllModules=true -DprocessDependencies=true -DprocessPlugins=false -DgenerateBackupsPoms=false -DgroupId=com.example.project
-  REPOSITORY_URL: "https://maven.pkg.github.com/MaxIvanenqo/test"
+  REPOSITORY_URL: "https://maven.pkg.github.com/MaxIvanenqo/workflow-concept"
 
 jobs:
   dump:

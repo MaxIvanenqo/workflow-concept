@@ -23,7 +23,7 @@ env:
   SERVER: "github"
   MAVEN_OPTS: -DgenerateBackupPoms=false -Dsurefire.skipTests=false
   SERVER_USERNAME: "MaxIvanenqo"
-  REPOSITORY_URL: "https://maven.pkg.github.com/MaxIvanenqo/test"
+  REPOSITORY_URL: "https://maven.pkg.github.com/MaxIvanenqo/workflow-concept"
 jobs:
   deploy:
     name: Deploy package
