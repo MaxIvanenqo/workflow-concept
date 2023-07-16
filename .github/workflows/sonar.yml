@@ -1,0 +1,13 @@
+name: Sonar
+
+on: 
+  workflow_call:
+
+jobs:
+    sonar:
+      name: Analyse
+      runs-on: ubuntu-latest
+      steps: 
+        - name: Get
+          run: |
+            echo "Integration to be implemented"

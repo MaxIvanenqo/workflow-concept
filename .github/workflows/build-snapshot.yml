@@ -1,0 +1,60 @@
+name: Build Snapshot
+
+on:
+  workflow_dispatch:
+
+permissions:
+  packages: write
+  contents: write
+
+env:
+  SERVER: "github"
+  PROFILE: "snapshot"
+  MAVEN_OPTS: -DgenerateBackupPoms=false -Dsurefire.skipTests=false
+  SERVER_USERNAME: "MaxIvanenqo"
+jobs:
+  dump:
+    name: Dump workflow context
+    uses: ./.github/workflows/dump-context.yml    
+
+  build:
+    name: Build & Test
+    runs-on: ubuntu-latest
+    environment: dev
+    steps: 
+      - uses: actions/checkout@v3
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'zulu'
+          cache: maven
+      
+      - name: Build & Test
+        run: |
+          mvn -P ${{ env.PROFILE }} clean install ${{ env.MAVEN_OPTS }}
+      
+  deploy:
+    needs: build
+    uses: ./.github/workflows/deploy.yml
+    with: 
+      activeProfile: "snapshot"
+      activeEnvironment: "dev"
+         
+  sonar:
+    name: Analyse
+    needs: build
+    uses: ./.github/workflows/sonar.yml
+       
+  mail:
+    name: Share analysis report
+    needs: sonar
+    if: always()
+    uses: ./.github/workflows/mail.yml
+
+  field-build-notification:
+    name: Send build error message to Teams channel
+    needs: build
+    if: failure()
+    uses: ./.github/workflows/teams-int.yml
+    

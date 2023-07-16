@@ -1,0 +1,69 @@
+name: Deploy
+
+on:
+  workflow_call:
+    inputs:
+        activeProfile:
+            description: Profile to be activated in maven
+            type: string
+            required: true
+        activeEnvironment: 
+            description: Environment to run in
+            type: string
+            required: true
+        branch:
+            description: Branch name package should be deployed from
+            type: string
+            default: dev
+
+permissions:
+  packages: write
+
+env:
+  SERVER: "github"
+  MAVEN_OPTS: -DgenerateBackupPoms=false -Dsurefire.skipTests=false
+  SERVER_USERNAME: "MaxIvanenqo"
+  REPOSITORY_URL: "https://maven.pkg.github.com/MaxIvanenqo/test"
+jobs:
+  deploy:
+    name: Deploy package
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.activeEnvironment }}
+    steps: 
+      - uses: actions/checkout@v3
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'zulu'
+          cache: maven
+
+      - name: Create maven settings
+        run: ./.github/workflows/reusable/scripts/create-maven-settings.sh
+        env:
+          PROFILE: ${{inputs.activeProfile}}
+          REPOSITORY_ID: ${{inputs.activeProfile}}
+          REPOSITORY_SNAPSHOTS_ENABLED: ${{inputs.activeProfile == 'snapshot'}}
+          REPOSITORY_RELEASES_ENABLED: ${{inputs.activeProfile == 'release'}}
+          REPOSITORY_URL: ${{env.REPOSITORY_URL}} 
+          SERVER_ID: ${{env.SERVER}}
+          SERVER_USERNAME: ${{env.SERVER_USERNAME}}
+          SERVER_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Configure git bot
+        run: | 
+            git config --local user.email "github-actions[bot]@users.noreply.github.com"
+            git config --local user.name "github-actions[bot]"
+
+      - name: Deploy package to ${{ env.SERVER }} 
+        run: |
+          git fetch
+          git checkout ${{inputs.branch}}
+          mvn -P ${{ inputs.activeProfile }} clean deploy -DaltDeploymentRepository=github::default::${{env.REPOSITORY_URL}} ${{ env.MAVEN_OPTS }}
+
+  failed-deploy-notification:
+    name: Send deploy error message to Teams channel
+    needs: deploy
+    if: failure()
+    uses: ./.github/workflows/teams-int.yml
+    

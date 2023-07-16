@@ -1,0 +1,48 @@
+name: Create Maven settings file
+
+on: 
+    workflow_call:
+
+env:         
+  SERVER_USERNAME: "MaxIvanenqo"
+  MAVEN_SERVER_SETTINGS: |
+      [{ 
+        "id": "github",
+        "username": "MaxIvanenqo", 
+        "password": "${{ secrets.GITHUB_TOKEN }}" 
+      }]
+  MAVEN_PROFILES_SETTINGS: | 
+      [{
+        "id": "snapshot"
+      }]
+  MAVEN_REPOSITORIES_SETTINGS: |
+      [{
+        "id": "snapshot",
+        "url": "https://maven.pkg.github.com/MaxIvanenqo/test",
+        "releases": {
+          "enabled": false,
+          "updatePolicy": "always"
+        },
+        "snapshots": {
+          "enabled": "true",
+          "updatePolicy": "always"
+        }
+      }]
+
+jobs: 
+    create:
+        environment: dev
+        runs-on: ubuntu-latest
+        steps:
+            - name: Create maven settings
+              uses: whelk-io/maven-settings-xml-action@v20
+              with:
+                servers: ${{ env.MAVEN_SERVER_SETTINGS }}
+                profiles: ${{ env.MAVEN_PROFILES_SETTINGS }}
+                repositories: ${{ env.MAVEN_REPOSITORIES_SETTINGS }}
+
+            - name: Publish artifact
+              uses: actions/upload-artifact@v2
+              with:
+                name: maven-settings
+                path: /home/runner/.m2/settings.xml

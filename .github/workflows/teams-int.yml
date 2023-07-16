@@ -1,0 +1,13 @@
+name: teams
+
+on: 
+  workflow_call:
+
+jobs:
+    notify-teams:
+      name: Notify MS Teams group
+      runs-on: ubuntu-latest
+      steps: 
+        - name: Send
+          run: |
+            echo "Integration to be implemented"
