@@ -20,6 +20,7 @@ env:
   PROFILE: "snapshot"
   MAVEN_OPTS: -DgenerateBackupPoms=false -Dsurefire.skipTests=false
   SERVER_USERNAME: "MaxIvanenqo"
+  REPOSITORY_URL: "https://maven.pkg.github.com/MaxIvanenqo/workflow-concept"
 jobs:
   dump:
     name: Dump workflow context
@@ -37,6 +38,18 @@ jobs:
           java-version: '11'
           distribution: 'zulu'
           cache: maven
+      
+      - name: Create maven settings
+        run: ./.github/workflows/reusable/scripts/create-maven-settings.sh
+        env:
+          PROFILE: "snapshot"
+          REPOSITORY_ID: "snapshot"
+          REPOSITORY_SNAPSHOTS_ENABLED: true
+          REPOSITORY_RELEASES_ENABLED: false
+          REPOSITORY_URL: ${{env.REPOSITORY_URL}} 
+          SERVER_ID: ${{env.SERVER}}
+          SERVER_USERNAME: ${{env.SERVER_USERNAME}}
+          SERVER_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
       
       - name: Build & Test
         run: |
