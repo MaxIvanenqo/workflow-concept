@@ -38,6 +38,18 @@ jobs:
           distribution: 'zulu'
           cache: maven
       
+      - name: Create maven settings
+        run: ./.github/workflows/reusable/scripts/create-maven-settings.sh
+        env:
+          PROFILE: "snapshot"
+          REPOSITORY_ID: "snapshot"
+          REPOSITORY_SNAPSHOTS_ENABLED: true
+          REPOSITORY_RELEASES_ENABLED: false
+          REPOSITORY_URL: ${{env.REPOSITORY_URL}} 
+          SERVER_ID: ${{env.SERVER}}
+          SERVER_USERNAME: ${{env.SERVER_USERNAME}}
+          SERVER_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+      
       - name: Build & Test
         run: |
           mvn -P ${{ env.PROFILE }} clean install ${{ env.MAVEN_OPTS }}
