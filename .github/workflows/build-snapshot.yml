@@ -106,7 +106,7 @@ jobs:
           mvn -P ${{ env.PROFILE }} versions:update-parent -DparentVersion=[$MAJOR.$MINOR.0-SNAPSHOT,$MAJOR.$MINOR.999-SNAPSHOT] -DallowSnapshots=true -DgenerateBackupPoms=false
          
           git commit -am "set next snapshot $VERSION"
-          
+          git push origin dev --follow-tags
   sonar:
     name: Analyse
     needs: build
