@@ -1,4 +1,14 @@
 #!/bin/bash
+
+PROFILE: $1
+REPOSITORY_ID: ${{inputs.activeProfile}}
+REPOSITORY_SNAPSHOTS_ENABLED: ${{inputs.activeProfile == 'snapshot'}}
+REPOSITORY_RELEASES_ENABLED: ${{inputs.activeProfile == 'release'}}
+REPOSITORY_URL: ${{secrets.REPOSITORY_URL}} 
+SERVER_ID: ${{secrets.SERVER_ID}}
+SERVER_USERNAME: ${{secrets.SERVER_USERNAME}}
+SERVER_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+
 SETTINGS_XML=$(cat << EOF
 <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
                         http://maven.apache.org/xsd/settings-1.0.0.xsd">

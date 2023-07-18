@@ -43,14 +43,7 @@ jobs:
         run: ./.github/workflows/reusable/scripts/create-maven-settings.sh
         env:
           PROFILE: "snapshot"
-          REPOSITORY_ID: "snapshot"
-          REPOSITORY_SNAPSHOTS_ENABLED: true
-          REPOSITORY_RELEASES_ENABLED: false
-          REPOSITORY_URL: ${{secrets.REPOSITORY_URL}} 
-          SERVER_ID: ${{secrets.SERVER_ID}}
-          SERVER_USERNAME: ${{secrets.SERVER_USERNAME}}
-          SERVER_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
-      
+  
       - name: Build & Test
         run: |
           mvn -P ${{ env.PROFILE }} clean install ${{ secrets.MAVEN_OPTS }}
@@ -61,7 +54,6 @@ jobs:
     uses: ./.github/workflows/deploy.yml
     with: 
       activeProfile: "snapshot"
-      activeEnvironment: "dev"
          
   setNextDevIteration:
     runs-on: ubuntu-latest

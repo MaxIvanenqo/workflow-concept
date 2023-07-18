@@ -7,30 +7,28 @@ on:
             description: Profile to be activated in maven
             type: string
             required: true
-        activeEnvironment: 
-            description: Environment to run in
-            type: string
-            required: true
-        branch:
-            description: Branch name package should be deployed from
-            type: string
-            default: dev
 
 permissions:
+  contents: write
   packages: write
 
 jobs:
   deploy:
     name: Deploy package
     runs-on: ubuntu-latest
-    environment: ${{ inputs.activeEnvironment }}
     steps: 
       - uses: actions/checkout@v3
+
+      - name: Setup environmental variables
+        id: var-setup
+        run: source ./.github/workflows/reusable/setup-env-var/snapshot-env
+        shell: bash
+
       - name: Set up JDK
         uses: actions/setup-java@v3
         with:
-          java-version: ${{secrets.JAVA_VERSION}}
-          distribution: 'zulu'
+          java-version: ${{ steps.var-setup.outputs.JAVA_VERSION }}
+          distribution: ${{ steps.var-setup.outputs.JAVA_DISTRIBUTION }}
           cache: maven
 
       - name: Create maven settings
