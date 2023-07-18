@@ -26,6 +26,9 @@ jobs:
     environment: dev
     steps: 
       - uses: actions/checkout@v3
+      - name: print vars
+        run: |
+          echo ${{secrets.JAVA_VERSION}}
       - name: Set up JDK
         uses: actions/setup-java@v3
         with:
