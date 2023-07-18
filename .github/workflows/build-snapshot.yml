@@ -77,6 +77,11 @@ jobs:
           distribution: 'zulu'
           cache: maven
       
+      - name: Configure git bot
+        run: | 
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+      
       - name: Create maven settings
         run: ./.github/workflows/reusable/scripts/create-maven-settings.sh
         env:
