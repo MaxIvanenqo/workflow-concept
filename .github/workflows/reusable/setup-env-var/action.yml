@@ -9,9 +9,9 @@ runs:
   steps:
     - run: |
         if [[ "${{ inputs.ENVIRONMENT }}" == "dev" ]]; then
-          source snapshot-env
+          source ./snapshot-env
         else
-          source release-env
+          source ./snapshot-env
         fi
         echo "JAVA_VERSION=$JAVA_VERSION" >> $GITHUB_ENV
         echo "JAVA_DISTRIBUTION=$JAVA_DISTRIBUTION" >> $GITHUB_ENV
