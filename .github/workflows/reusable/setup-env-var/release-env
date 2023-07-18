@@ -1,2 +1,3 @@
+#!/bin/bash
 export RELEASE_JAVA_VERSION='11'
 export RELEASE_JAVA_DISTRIBUTION='zulu'
