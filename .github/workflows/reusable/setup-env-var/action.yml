@@ -4,6 +4,12 @@ inputs:
   ENVIRONMENT:
     description: 'The environment to set up'
     required: true
+outputs:
+  JAVA_VERSION:
+    description: 'The Java version'
+  JAVA_DISTRIBUTION:
+    description: 'The Java distribution'
+    
 runs:
   using: 'composite'
   steps:
@@ -13,6 +19,7 @@ runs:
         else
           source ./.github/workflows/reusable/setup-env-var/snapshot-env
         fi
-        echo "JAVA_VERSION=$JAVA_VERSION" >> $GITHUB_ENV
-        echo "JAVA_DISTRIBUTION=$JAVA_DISTRIBUTION" >> $GITHUB_ENV
+        echo "::set-output name=JAVA_VERSION::$JAVA_VERSION"
+        echo "::set-output name=JAVA_DISTRIBUTION::$JAVA_DISTRIBUTION"
+        echo "::set-output name=MAVEN_OPTIONS::$MAVEN_OPTIONS"
       shell: bash
