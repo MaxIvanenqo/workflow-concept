@@ -1,0 +1,18 @@
+name: 'Set-up Environment Variables'
+description: 'Read and set environment variables from the appropriate file'
+inputs:
+  ENVIRONMENT:
+    description: 'The environment to set up'
+    required: true
+runs:
+  using: 'composite'
+  steps:
+    - run: |
+        if [[ "${{ inputs.ENVIRONMENT }}" == "dev" ]]; then
+          source snapshot-env
+        else
+          source release-env
+        fi
+        echo "JAVA_VERSION=$JAVA_VERSION" >> $GITHUB_ENV
+        echo "JAVA_DISTRIBUTION=$JAVA_DISTRIBUTION" >> $GITHUB_ENV
+      shell: bash
