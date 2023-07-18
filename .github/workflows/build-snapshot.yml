@@ -35,8 +35,8 @@ jobs:
       
       - name: test visibility
         run: |
-          echo ${{ steps.set-up-env.outputs.JAVA_VERSION }}
-          echo ${{ steps.set-up-env.outputs.JAVA_DISTRIBUTION }}
+          echo ${{ steps.set-up-env.outputs.* }}
+          
 
       - name: Set up JDK
         uses: actions/setup-java@v3
