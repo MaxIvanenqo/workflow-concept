@@ -1,4 +1,5 @@
 #!/bin/bash
-JAVA_VERSION=11
-JAVA_DISTRIBUTION='zulu'
-./.github/workflows/reusable/setup-env-var/setup.sh $JAVA_VERSION $JAVA_DISTRIBUTION $MAVEN_OPTIONS
+MAVEN_PROFILE_NAME="release"
+SERVER_USERNAME=$2
+SERVER_PASSWORD=$3
+./.github/workflows/reusable/setup-env-var/setup.sh $MAVEN_PROFILE_NAME $SERVER_USERNAME $SERVER_PASSWORD
