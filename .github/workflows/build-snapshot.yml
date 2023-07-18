@@ -27,16 +27,12 @@ jobs:
     steps: 
       - uses: actions/checkout@v3
 
-      - name: Set up environment variables
-        id: set-up-env
-        uses: ./.github/workflows/reusable/setup-env-var
-        with:
-          ENVIRONMENT: "dev"
-      
-      - name: test visibility
+      - name: vars setup
         run: |
-          echo ${{ steps.set-up-env.outputs.* }}
-          
+            source ./.github/workflows/reusable/setup-env-var/snapshot-env
+            echo "output should have"
+            echo $JAVA_VERSION
+        shell: bash
 
       - name: Set up JDK
         uses: actions/setup-java@v3
