@@ -1,4 +1,4 @@
 #!/bin/bash
 JAVA_VERSION=11
 JAVA_DISTRIBUTION='zulu'
-mvn-setup.sh $JAVA_VERSION $JAVA_DISTRIBUTION $MAVEN_OPTIONS
+./.github/workflows/reusable/setup-env-var/snapshot-env/mvn-setup.sh $JAVA_VERSION $JAVA_DISTRIBUTION $MAVEN_OPTIONS
