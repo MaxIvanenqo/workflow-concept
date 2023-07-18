@@ -27,18 +27,16 @@ jobs:
     steps: 
       - uses: actions/checkout@v3
 
-      - name: vars setup
-        run: |
-            source ./.github/workflows/reusable/setup-env-var/snapshot-env
-            echo "output should have"
-            echo $JAVA_VERSION
+      - name: Setup environmental variables
+        id: var-setup
+        run: source ./.github/workflows/reusable/setup-env-var/snapshot-env
         shell: bash
 
       - name: Set up JDK
         uses: actions/setup-java@v3
         with:
-          java-version: ${{env.JAVA_VERSION}}
-          distribution: 'zulu'
+          java-version: ${{ steps.var-setup.outputs.JAVA_VERSION }}
+          distribution: ${{ steps.var-setup.outputs.JAVA_DISTRIBUTION }}
           cache: maven
       
       - name: Create maven settings
