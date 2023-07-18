@@ -1,4 +1,5 @@
 #!/bin/bash
 JAVA_VERSION=11
 JAVA_DISTRIBUTION='zulu'
-./.github/workflows/reusable/setup-env-var/setup.sh $JAVA_VERSION $JAVA_DISTRIBUTION $MAVEN_OPTIONS
+echo "::set-output name=JAVA_VERSION::$JAVA_VERSION"
+echo "::set-output name=JAVA_DISTRIBUTION::$JAVA_DISTRIBUTION"
