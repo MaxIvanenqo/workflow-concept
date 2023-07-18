@@ -9,7 +9,7 @@ outputs:
     description: 'The Java version'
   JAVA_DISTRIBUTION:
     description: 'The Java distribution'
-    
+
 runs:
   using: 'composite'
   steps:
@@ -22,4 +22,6 @@ runs:
         echo "::set-output name=JAVA_VERSION::$JAVA_VERSION"
         echo "::set-output name=JAVA_DISTRIBUTION::$JAVA_DISTRIBUTION"
         echo "::set-output name=MAVEN_OPTIONS::$MAVEN_OPTIONS"
+        echo "output should have"
+        echo $JAVA_VERSION
       shell: bash
