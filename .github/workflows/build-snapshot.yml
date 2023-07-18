@@ -32,6 +32,10 @@ jobs:
         run: source ./.github/workflows/reusable/setup-env-var/snapshot-env
         shell: bash
 
+      - name: test output
+        run: | 
+          echo ${{ steps.var-setup.outputs.JAVA_VERSION }}
+          echo ${{ steps.var-setup.outputs.JAVA_DISTRIBUTION }}  
       - name: Set up JDK
         uses: actions/setup-java@v3
         with:
