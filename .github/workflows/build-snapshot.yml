@@ -54,7 +54,7 @@ jobs:
           mvn -P snapshot clean install ${{ steps.var-setup.outputs.MAVEN_OPTS }}
       
   deploy:
-    if: github.event.pull_request.merged == true
+
     needs: build
     uses: ./.github/workflows/deploy.yml
     with: 
