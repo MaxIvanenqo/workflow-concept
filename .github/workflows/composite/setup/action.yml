@@ -2,7 +2,8 @@ name: 'Setup'
 description: 'Setup variables and environment'
 runs:
   using: "composite"
-  steps:    
+  steps:
+    - uses: ./.github/workflows/composite/dump-context
     - name: setup variables
       id: var-setup
       run: |
