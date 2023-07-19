@@ -90,21 +90,14 @@ jobs:
     needs: stage-release
     name: Deploy release to Prod server
     runs-on: ubuntu-latest
-    outputs: 
-        version: ${{ steps.deploy-branch.outputs.version }}
     environment: prod
     steps:
         - uses: actions/checkout@v3
-        - name: Stage release
-          id: deploy-branch
-          run: |
-            echo "::set-output name=branch::release-$(./.github/workflows/scripts/get-version.sh)"
-            echo "::set-output name=artifactId::release-$(./.github/workflows/scripts/get-artifact.sh)"
         - name: Deploy to Prod server
           uses: ./.github/workflows/composite/deploy
           with:
             PROFILE: "release"
-            BRANCH: "release/${{ steps.deploy-branch.outputs.version }}"
+            BRANCH: "release/${{ needs.stage-release.outputs.version }}"
             REPOSITORY_URL: ${{ secrets.REPOSITORY_URL }}
             SERVER_ID: ${{ secrets.SERVER_ID }}
             SERVER_USERNAME: ${{ secrets.SERVER_USERNAME }}
