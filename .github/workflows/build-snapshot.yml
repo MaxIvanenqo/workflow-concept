@@ -58,7 +58,9 @@ jobs:
     needs: build
     uses: ./.github/workflows/deploy.yml
     with: 
-      activeProfile: "snapshot"
+      PROFILE: "snapshot"
+      BRANCH: "dev"
+      ENVIRONMENT: "dev"
          
   setNextDevIteration:
     runs-on: ubuntu-latest
