@@ -9,7 +9,7 @@ SETTINGS_XML=$(cat << EOF
       <repositories>
         <repository>
           <id>snapshot</id>
-          <url>${REPOSITORY_URL}</url>
+          <url>https://maven.pkg.github.com/MaxIvanenqo/workflow-concept</url>
           <releases>
             <enabled>false</enabled>
           </releases>
@@ -25,7 +25,7 @@ SETTINGS_XML=$(cat << EOF
       <repositories>
         <repository>
           <id>release</id>
-          <url>${REPOSITORY_URL}</url>
+          <url>https://maven.pkg.github.com/MaxIvanenqo/workflow-concept</url>
           <releases>
             <enabled>true</enabled>
             <updatePolicy>always</updatePolicy>
@@ -39,7 +39,7 @@ SETTINGS_XML=$(cat << EOF
   </profiles>
   <servers>
     <server>
-      <id>${SERVER_ID}</id>
+      <id>github</id>
       <username>${SERVER_USERNAME}</username>
       <password>${SERVER_PASSWORD}</password>
     </server>

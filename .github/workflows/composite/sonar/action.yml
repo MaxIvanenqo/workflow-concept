@@ -1,0 +1,6 @@
+name: 'Sonarqube report'
+runs:
+  using: "composite"
+  steps:
+    - name: Create maven settings
+      run: echo "Integration to be implemented"

@@ -30,6 +30,9 @@ jobs:
       - name: Setup environmental variables
         id: var-setup
         run: source ./.github/workflows/reusable/setup-env-var/snapshot-env
+        env: 
+          SERVER_USERNAME: ${{ secrets.SERVER_USERNAME}}
+          SERVER_PASSWORD: ${{ secrets.GITHUB_TOKEN}}
         shell: bash
 
       - name: Set up JDK
@@ -38,25 +41,25 @@ jobs:
           java-version: ${{ steps.var-setup.outputs.JAVA_VERSION }}
           distribution: ${{ steps.var-setup.outputs.JAVA_DISTRIBUTION }}
           cache: maven
-      
-      - name: Create maven settings
-        run: ./.github/workflows/reusable/scripts/create-maven-settings.sh
-        env:
-          SERVER_ID:        ${{ secrets.SERVER_ID }}
-          REPOSITORY_URL:   ${{ secrets.REPOSITORY_URL }} 
-          SERVER_USERNAME:  ${{ secrets.SERVER_USERNAME }}
-          SERVER_PASSWORD:  ${{ secrets.GITHUB_TOKEN }}
           
+      - uses: ./.github/workflows/reusable/composite/maven-settings
+        with: 
+            REPOSITORY_URL: ${{ secrets.REPOSITORY_URL }} 
+            SERVER_ID: ${{ secrets.SERVER_ID }}
+            SERVER_USERNAME: ${{ secrets.SERVER_USERNAME }}
+            SERVER_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+        
       - name: Build & Test
         run: |
           mvn -P snapshot clean install ${{ steps.var-setup.outputs.MAVEN_OPTS }}
       
   deploy:
-    if: github.event.pull_request.merged == true
     needs: build
     uses: ./.github/workflows/deploy.yml
     with: 
-      activeProfile: "snapshot"
+      PROFILE: "snapshot"
+      BRANCH: "dev"
+      ENVIRONMENT: "dev"
          
   setNextDevIteration:
     runs-on: ubuntu-latest
@@ -65,6 +68,15 @@ jobs:
     if: success()
     steps: 
       - uses: actions/checkout@v3
+      
+      - name: Setup environmental variables
+        id: var-setup
+        run: source ./.github/workflows/reusable/setup-env-var/snapshot-env
+        env: 
+          SERVER_USERNAME: ${{ secrets.SERVER_USERNAME}}
+          SERVER_PASSWORD: ${{ secrets.GITHUB_TOKEN}}
+        shell: bash
+      
       - name: Set up JDK
         uses: actions/setup-java@v3
         with:
@@ -77,13 +89,12 @@ jobs:
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
       
-      - name: Create maven settings
-        run: ./.github/workflows/reusable/scripts/create-maven-settings.sh
-        env:
-          SERVER_ID:        ${{ secrets.SERVER }}
-          REPOSITORY_URL:   ${{ secrets.REPOSITORY_URL }} 
-          SERVER_USERNAME:  ${{ secrets.SERVER_USERNAME }}
-          SERVER_PASSWORD:  ${{ secrets.GITHUB_TOKEN }}
+      - uses: ./.github/workflows/reusable/composite/maven-settings
+        with: 
+            REPOSITORY_URL: ${{ secrets.REPOSITORY_URL }} 
+            SERVER_ID: ${{ secrets.SERVER_ID }}
+            SERVER_USERNAME: ${{ secrets.SERVER_USERNAME }}
+            SERVER_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
       
       - name: Create next dev iteration
         run: |
