@@ -85,7 +85,7 @@ jobs:
             git fetch
             git commit -a -m "build release $MVN_ARTIFACT_ID-$VERSION"
             git push origin release/$VERSION
-            echo "::set-output name=version::release-$VERSION"
+            echo "::set-output name=version::$VERSION"
 
   deploy:
     needs: stage-release
