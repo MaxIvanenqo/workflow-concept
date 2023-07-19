@@ -22,8 +22,11 @@ jobs:
     environment: dev
     steps: 
       - uses: actions/checkout@v3
-      - uses: ./.github/workflows/composite/dump-context
-      - uses: ./.github/workflows/composite/setup
+      - name: dump context
+        uses: ./.github/workflows/composite/dump-context
+        
+      - name: Setup environment and variables
+        uses: ./.github/workflows/composite/setup
       
       - name: Create maven settings
         run: |
