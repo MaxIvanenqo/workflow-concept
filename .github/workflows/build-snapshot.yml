@@ -52,6 +52,7 @@ jobs:
     name: Set next dev iteration
     needs: deploy
     if: success()
+    environment: dev
     steps: 
       - uses: actions/checkout@v3
       - uses: ./.github/workflows/composite/setup
