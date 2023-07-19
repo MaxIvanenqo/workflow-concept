@@ -41,14 +41,11 @@ jobs:
           java-version: ${{ steps.var-setup.outputs.JAVA_VERSION }}
           distribution: ${{ steps.var-setup.outputs.JAVA_DISTRIBUTION }}
           cache: maven
-          
-      - uses: ./.github/workflows/reusable/composite/maven-settings
-        with: 
-            REPOSITORY_URL: ${{ secrets.REPOSITORY_URL }} 
-            SERVER_ID: ${{ secrets.SERVER_ID }}
-            SERVER_USERNAME: ${{ secrets.SERVER_USERNAME }}
-            SERVER_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
-        
+      
+      - name: Create maven settings
+        run: ./.github/workflows/reusable/scripts/create-maven-settings.sh ${{ secrets.REPOSITORY_URL }} ${{ secrets.SERVER_ID }} ${{ secrets.SERVER_USERNAME }} ${{ secrets.GITHUB_TOKEN }}
+        shell: bash
+      
       - name: Build & Test
         run: |
           mvn -P snapshot clean install ${{ steps.var-setup.outputs.MAVEN_OPTS }}
@@ -66,7 +63,7 @@ jobs:
       SERVER_USERNAME: ${{ secrets.SERVER_USERNAME }}
       SERVER_PASSWORD: ${{ secrets.SERVER_PASSWORD }}
          
-  setNextDevIteration:
+  next-snapshot-iteration:
     runs-on: ubuntu-latest
     name: Set next dev iteration
     needs: deploy
@@ -94,12 +91,9 @@ jobs:
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
       
-      - uses: ./.github/workflows/reusable/composite/maven-settings
-        env: 
-            REPOSITORY_URL: ${{ secrets.REPOSITORY_URL }} 
-            SERVER_ID: ${{ secrets.SERVER_ID }}
-            SERVER_USERNAME: ${{ secrets.SERVER_USERNAME }}
-            SERVER_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+      - name: Create maven settings
+        run: ./.github/workflows/reusable/scripts/create-maven-settings.sh ${{ secrets.REPOSITORY_URL }} ${{ secrets.SERVER_ID }} ${{ secrets.SERVER_USERNAME }} ${{ secrets.GITHUB_TOKEN }}
+        shell: bash
       
       - name: Create next dev iteration
         run: |
