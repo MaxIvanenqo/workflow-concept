@@ -1,14 +1,5 @@
 name: 'Maven settings'
 description: 'create maven settings'
-inputs:
-  ENVIRONMENT:
-    type: string
-    required: true
-    default: 'dev'
-outputs:
-  random-number:
-    description: "Random number"
-    value: ${{ steps.random-number-generator.outputs.random-number }}
 runs:
   using: "composite"
   steps:
