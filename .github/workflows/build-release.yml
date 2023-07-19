@@ -82,7 +82,7 @@ jobs:
             echo "::set-output name=version::release-$VERSION"
 
   deploy:
-    needs: build
+    needs: stage-release
     name: Deploy snapshot to Int server
     runs-on: ubuntu-latest
     outputs: 
