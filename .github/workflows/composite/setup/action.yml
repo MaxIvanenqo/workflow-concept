@@ -1,0 +1,13 @@
+name: 'Setup'
+description: 'Setup variables and environment'
+runs:
+  using: "composite"
+  steps:
+    - name: print
+      run: |
+        echo "repo url" ${{ inputs.REPOSITORY_URL }} 
+        echo "serv username" ${{ inputs.SERVER_USERNAME }} 
+      shell: bash  
+    - name: Create maven settings
+      run: ./.github/workflows/reusable/scripts/create-maven-settings.sh ${{ inputs.REPOSITORY_URL }} ${{ inputs.SERVER_ID }} ${{ inputs.SERVER_USERNAME }} ${{ inputs.SERVER_PASSWORD }}
+      shell: bash
