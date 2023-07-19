@@ -65,7 +65,7 @@ jobs:
           run: |
             VERSION=$(./.github/workflows/scripts/get-version.sh)
             MAJOR=$(cut -d'.' -f1 <<<"$VERSION") MINOR=$(cut -d'.' -f2 <<<"$VERSION") 
-            mvn -P release versions:set ${{ steps.var-setup.outputs.MAVEN_SET_VERSION_OPTS }} ${{ steps.var-setup.outputs.MAVEN_OPTS }}
+            mvn -P release versions:use-releases
           shell: bash
 
         - name: Get updated version
