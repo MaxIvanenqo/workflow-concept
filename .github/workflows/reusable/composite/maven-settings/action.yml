@@ -22,5 +22,5 @@ runs:
         echo "serv username" ${{ inputs.SERVER_USERNAME }} 
       shell: bash  
     - name: Create maven settings
-      run: ./.github/workflows/reusable/scripts/create-maven-settings.sh ${{ inputs.REPOSITORY_URL }} ${{ inputs.SERVER_ID }} ${{ inputs.SERVER_USERNAME }} ${{ inputs.GITHUB_TOKEN }}
+      run: ./.github/workflows/reusable/scripts/create-maven-settings.sh ${{ inputs.REPOSITORY_URL }} ${{ inputs.SERVER_ID }} ${{ inputs.SERVER_PASSWORD }} ${{ inputs.GITHUB_TOKEN }}
       shell: bash
