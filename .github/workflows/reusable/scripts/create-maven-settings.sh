@@ -1,5 +1,10 @@
 #!/bin/bash
 
+REPOSITORY_URL=$1
+SERVER_ID=$2
+SERVER_USERNAME=$3
+SERVER_PASSWORD=$4
+
 SETTINGS_XML=$(cat << EOF
 <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
                         http://maven.apache.org/xsd/settings-1.0.0.xsd">
