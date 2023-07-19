@@ -54,7 +54,6 @@ jobs:
           mvn -P snapshot clean install ${{ steps.var-setup.outputs.MAVEN_OPTS }}
       
   deploy:
-
     needs: build
     uses: ./.github/workflows/deploy.yml
     with: 
