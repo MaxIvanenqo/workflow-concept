@@ -62,8 +62,8 @@ jobs:
       ENVIRONMENT: "dev"
       REPOSITORY_URL: ${{ secrets.REPOSITORY_URL }}
       SERVER_ID: ${{ secrets.SERVER_ID }}
-      SERVER_USERNAME: ${{ SERVER_USERNAME }}
-      SERVER_PASSWORD: ${{ SERVER_PASSWORD }}
+      SERVER_USERNAME: ${{ secrets.SERVER_USERNAME }}
+      SERVER_PASSWORD: ${{ secrets.SERVER_PASSWORD }}
          
   setNextDevIteration:
     runs-on: ubuntu-latest
