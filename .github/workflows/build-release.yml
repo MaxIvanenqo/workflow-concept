@@ -65,7 +65,8 @@ jobs:
           run: |
             VERSION=$(./.github/workflows/scripts/get-version.sh)
             MAJOR=$(cut -d'.' -f1 <<<"$VERSION") MINOR=$(cut -d'.' -f2 <<<"$VERSION") 
-            mvn versions:use-releases
+            mvn versions:set -DremoveSnapshot=true -DprocessParent=true -DprocessAllModules=true -DprocessDependencies=true -DprocessPlugins=false -DgenerateBackupPoms=false -DgroupId=com.example.project
+            mvn versions:commit
           shell: bash
 
         - name: Get updated version
