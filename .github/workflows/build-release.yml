@@ -35,18 +35,14 @@ jobs:
           distribution: 'zulu'
           cache: maven
 
-      - name: create maven settings
-        run: ./.github/workflows/reusable/scripts/create-maven-settings.sh
-        env:
-            PROFILE: "release"
-            REPOSITORY_ID: "release"
-            REPOSITORY_SNAPSHOTS_ENABLED: false
-            REPOSITORY_RELEASES_ENABLED: true
-            REPOSITORY_URL: ${{env.REPOSITORY_URL}} 
-            SERVER_ID: ${{env.SERVER}}
-            SERVER_USERNAME: ${{env.SERVER_USERNAME}}
+      - name: Generate maven settings file
+        uses: ./.github/workflows/reusable/composite/maven-settings
+        with: 
+            REPOSITORY_URL: ${{ secrets.REPOSITORY_URL }} 
+            SERVER_ID: ${{ secrets.SERVER_ID }}
+            SERVER_USERNAME: ${{ secrets.SERVER_USERNAME }}
             SERVER_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
-
+            
       - name: Clean & verify
         run: |
           mvn -P ${{ env.PROFILE }} clean verify ${{ env.MAVEN_OPTS }}
@@ -74,22 +70,13 @@ jobs:
           distribution: 'zulu'
           cache: maven
 
-      - name: Configure git bot
-        run: | 
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
-
-      - name: create maven settings
-        run: ./.github/workflows/reusable/scripts/create-maven-settings.sh
-        env:
-          PROFILE: "release"
-          REPOSITORY_ID: "release"
-          REPOSITORY_SNAPSHOTS_ENABLED: false
-          REPOSITORY_RELEASES_ENABLED: true
-          REPOSITORY_URL: ${{env.REPOSITORY_URL}} 
-          SERVER_ID: ${{env.SERVER}}
-          SERVER_USERNAME: ${{env.SERVER_USERNAME}}
-          SERVER_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+      - name: Generate maven settings file
+        uses: ./.github/workflows/reusable/composite/maven-settings
+        with: 
+            REPOSITORY_URL: ${{ secrets.REPOSITORY_URL }} 
+            SERVER_ID: ${{ secrets.SERVER_ID }}
+            SERVER_USERNAME: ${{ secrets.SERVER_USERNAME }}
+            SERVER_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Resolve release version
         run: |
@@ -99,12 +86,16 @@ jobs:
           mvn -P ${{ env.PROFILE }} versions:resolve-ranges ${{ env.MAVEN_OPTS }} ${{ env.MAVEN_RESOLVE_RANGES_OPTS }}
           mvn -P ${{ env.PROFILE }} versions:set ${{ env.MAVEN_OPTS }} ${{ env.MAVEN_SET_VERSION_OPTS }}
 
+      - name: Configure git bot
+        run: | 
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+
       - name: Stage release
         id: stage
         run: |
           MVN_ARTIFACT_ID=$(./.github/workflows/reusable/scripts/get-artifact.sh)
           VERSION=$(./.github/workflows/reusable/scripts/get-version.sh)
-          TAG="release-$MVN_ARTIFACT_ID-$VERSION"
           git checkout -b release-$VERSION
           git fetch
           git commit -a -m "build release $MVN_ARTIFACT_ID-$VERSION"
@@ -116,9 +107,9 @@ jobs:
     name: Deploy Release ${{needs.stage-release.outputs.version}}
     uses: ./.github/workflows/deploy.yml
     with:
-      activeProfile: "release"
-      activeEnvironment: "prod"
-      branch: ${{needs.stage-release.outputs.version}}
+      PROFILE: "release"
+      ENVIRONMENT: "prod"
+      BRANCH: ${{needs.stage-release.outputs.version}}
   
   post-deploy:
     needs: [deploy-release, stage-release]
@@ -135,18 +126,14 @@ jobs:
           distribution: 'zulu'
           cache: maven
 
-      - name: create maven settings
-        run: ./.github/workflows/reusable/scripts/create-maven-settings.sh
-        env:
-          PROFILE: "release"
-          REPOSITORY_ID: "release"
-          REPOSITORY_SNAPSHOTS_ENABLED: false
-          REPOSITORY_RELEASES_ENABLED: true
-          REPOSITORY_URL: ${{env.REPOSITORY_URL}} 
-          SERVER_ID: ${{env.SERVER}}
-          SERVER_USERNAME: ${{env.SERVER_USERNAME}}
-          SERVER_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
-
+      - name: Generate maven settings file
+        uses: ./.github/workflows/reusable/composite/maven-settings
+        with: 
+            REPOSITORY_URL: ${{ secrets.REPOSITORY_URL }} 
+            SERVER_ID: ${{ secrets.SERVER_ID }}
+            SERVER_USERNAME: ${{ secrets.SERVER_USERNAME }}
+            SERVER_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+            
       - name: Configure git bot
         run: | 
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
@@ -179,4 +166,4 @@ jobs:
           mvn -P ${{ env.PROFILE }} versions:update-parent -DparentVersion=[$MAJOR.$MINOR.0-SNAPSHOT,$MAJOR.$MINOR.999-SNAPSHOT] -DallowSnapshots=true -DgenerateBackupPoms=false
          
           git commit -am "noissue set next snapshot $VERSION"
-          git push origin dev --follow-tags
+          git push origin dev
