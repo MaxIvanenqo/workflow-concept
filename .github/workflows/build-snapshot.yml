@@ -30,6 +30,9 @@ jobs:
       - name: Setup environmental variables
         id: var-setup
         run: source ./.github/workflows/reusable/setup-env-var/snapshot-env
+        env: 
+          SERVER_USERNAME: ${{ secrets.SERVER_USERNAME}}
+          SERVER_PASSWORD: ${{ secrets.GITHUB_TOKEN}}
         shell: bash
 
       - name: Set up JDK
@@ -64,6 +67,15 @@ jobs:
     if: success()
     steps: 
       - uses: actions/checkout@v3
+      
+      - name: Setup environmental variables
+        id: var-setup
+        run: source ./.github/workflows/reusable/setup-env-var/snapshot-env
+        env: 
+          SERVER_USERNAME: ${{ secrets.SERVER_USERNAME}}
+          SERVER_PASSWORD: ${{ secrets.GITHUB_TOKEN}}
+        shell: bash
+      
       - name: Set up JDK
         uses: actions/setup-java@v3
         with:
