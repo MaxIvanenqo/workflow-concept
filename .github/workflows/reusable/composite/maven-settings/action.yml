@@ -1,12 +1,25 @@
 name: 'Maven settings'
 description: 'create maven settings'
+inputs: 
+  SERVER_ID: 
+    type: string
+    required: true
+  SERVER_USERNAME: 
+    type: string
+    required: true
+  SERVER_PASSWORD: 
+    type: string
+    required: true
+  REPOSITORY_URL:
+    type: string
+    required: true
 runs:
   using: "composite"
   steps:
     - name: Create maven settings
       run: ./.github/workflows/reusable/scripts/create-maven-settings.sh
       env:
-          SERVER_ID:        ${{ secrets.SERVER_ID }}
-          REPOSITORY_URL:   ${{ secrets.REPOSITORY_URL }} 
-          SERVER_USERNAME:  ${{ secrets.SERVER_USERNAME }}
-          SERVER_PASSWORD:  ${{ secrets.GITHUB_TOKEN }}
+          SERVER_ID:        ${{ inputs.SERVER_ID }}
+          REPOSITORY_URL:   ${{ inputs.REPOSITORY_URL }} 
+          SERVER_USERNAME:  ${{ inputs.SERVER_USERNAME }}
+          SERVER_PASSWORD:  ${{ inputs.GITHUB_TOKEN }}
