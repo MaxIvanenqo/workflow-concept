@@ -3,13 +3,17 @@ description: 'Setup variables and environment'
 runs:
   using: "composite"
   steps:
-    - name: print
+    - name: setup variables
+      id: var-setup
       run: |
         MAVEN_PROFILE_NAME="release"
         SERVER_USERNAME=$2
         SERVER_PASSWORD=$3
         ./.github/workflows/reusable/setup-env-var/setup.sh $MAVEN_PROFILE_NAME $SERVER_USERNAME $SERVER_PASSWORD
       shell: bash  
-    - name: Create maven settings
-      run: ./.github/workflows/reusable/scripts/create-maven-settings.sh ${{ inputs.REPOSITORY_URL }} ${{ inputs.SERVER_ID }} ${{ inputs.SERVER_USERNAME }} ${{ inputs.SERVER_PASSWORD }}
-      shell: bash
+    - name: setup JDK
+      uses: actions/setup-java@v3
+      with:
+          java-version: ${{ steps.var-setup.outputs.JAVA_VERSION }}
+          distribution: ${{ steps.var-setup.outputs.JAVA_DISTRIBUTION }}
+          cache: maven
