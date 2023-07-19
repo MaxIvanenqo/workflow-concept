@@ -16,6 +16,10 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - name: print
+      run: |
+        echo ${{ inputs.REPOSITORY_URL }} 
+        echo ${{ inputs.SERVER_USERNAME }} 
     - name: Create maven settings
       run: ./.github/workflows/reusable/scripts/create-maven-settings.sh
       shell: bash
