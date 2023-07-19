@@ -1,15 +1,16 @@
 name: 'Maven settings'
 description: 'create maven settings'
 inputs:
-  who-to-greet:  # id of input
-    description: 'Who to greet'
+  ENVIRONMENT:
+    type: string
     required: true
-    default: 'World'
+    default: 'dev'
 outputs:
   random-number:
     description: "Random number"
     value: ${{ steps.random-number-generator.outputs.random-number }}
 runs:
+  environment: 'dev'
   using: "composite"
   steps:
     - run: echo Hello ${{ inputs.who-to-greet }}.
