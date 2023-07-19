@@ -20,20 +20,24 @@ inputs:
 runs:
   using: 'composite'
   steps:
+
     - uses: ./.github/workflows/composite/setup
+
     - name: Create maven settings
       run: |
         ./.github/workflows/scripts/create-maven-settings.sh ${{ inputs.REPOSITORY_URL }} ${{ inputs.SERVER_ID }} ${{ inputs.SERVER_USERNAME }} ${{ inputs.SERVER_PASSWORD }}
       shell: bash
+
     - name: Configure git bot
       shell: bash
       run: |
         cat /home/runner/.m2/settings.xml
         git config --local user.email "github-actions[bot]@users.noreply.github.com"
         git config --local user.name "github-actions[bot]"
-    - name: Deploy
+
+    - name: Deploy from ${{ inputs.BRANCH }} branch to ${{ inputs.SERVER_ID }} on ${{ inputs.PROFILE }} profile
       shell: bash
       run: |
         git fetch
-        git checkout $BRANCH
-        mvn -P $PROFILE clean deploy
+        git checkout ${{ inputs.BRANCH }}
+        mvn -P ${{ inputs.PROFILE }} clean deploy -Dmaven.deploy.deployAtEnd=true
