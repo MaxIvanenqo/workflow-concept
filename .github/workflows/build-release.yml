@@ -65,7 +65,7 @@ jobs:
           run: |
             VERSION=$(./.github/workflows/scripts/get-version.sh)
             MAJOR=$(cut -d'.' -f1 <<<"$VERSION") MINOR=$(cut -d'.' -f2 <<<"$VERSION") 
-            mvn versions:set ${{ steps.var-setup.outputs.MAVEN_SET_VERSION_OPTS }} ${{ steps.var-setup.outputs.MAVEN_OPTS }}
+            mvn versions:set -DremoveSnapshot=true -DprocessParent=true -DprocessAllModules=true -DprocessDependencies=true -DprocessPlugins=false -DgenerateBackupPoms=false -DgroupId=com.example.project -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.incrementalVersion}
             mvn versions:commit
           shell: bash
 
