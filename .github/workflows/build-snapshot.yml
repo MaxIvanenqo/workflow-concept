@@ -78,17 +78,11 @@ jobs:
   sonar:
     name: Analyse
     needs: build
-    uses: ./.github/workflows/sonar.yml
-       
-  mail:
-    name: Share analysis report
-    needs: sonar
-    if: always()
-    uses: ./.github/workflows/mail.yml
+    uses: ./.github/workflows/composite/sonar
 
   field-build-notification:
     name: Send build error message to Teams channel
     needs: build
     if: failure()
-    uses: ./.github/workflows/teams-int.yml
+    uses: ./.github/workflows/composite/ms-teams
     
