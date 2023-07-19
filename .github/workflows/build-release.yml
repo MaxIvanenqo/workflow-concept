@@ -72,7 +72,7 @@ jobs:
         - name: Get updated version
           run: |
             VERSION=$(mvn org.apache.maven.plugins:maven-help-plugin:3.1.0:evaluate -Dexpression=project.version -q -DforceStdout)
-            echo "Updated version is $VERSION"
+            echo "::set-output name=version::$VERSION"
           shell: bash
 
         - name: Stage release
@@ -80,7 +80,7 @@ jobs:
           run: |
             MVN_ARTIFACT_ID=$(./.github/workflows/scripts/get-artifact.sh)
             VERSION=$(./.github/workflows/scripts/get-version.sh)
-            git checkout -b release-$VERSION
+            git checkout -b release/$VERSION
             git fetch
             git commit -a -m "build release $MVN_ARTIFACT_ID-$VERSION"
             git push origin release-$VERSION
@@ -91,7 +91,7 @@ jobs:
     name: Deploy release to Prod server
     runs-on: ubuntu-latest
     outputs: 
-        branch: ${{ steps.deploy-branch.outputs.branch }}
+        version: ${{ steps.deploy-branch.outputs.version }}
     environment: prod
     steps:
         - uses: actions/checkout@v3
@@ -104,7 +104,7 @@ jobs:
           uses: ./.github/workflows/composite/deploy
           with:
             PROFILE: "release"
-            BRANCH: ${{ steps.deploy-branch.outputs.branch }}
+            BRANCH: "release/${{ steps.deploy-branch.outputs.version }}"
             REPOSITORY_URL: ${{ secrets.REPOSITORY_URL }}
             SERVER_ID: ${{ secrets.SERVER_ID }}
             SERVER_USERNAME: ${{ secrets.SERVER_USERNAME }}
