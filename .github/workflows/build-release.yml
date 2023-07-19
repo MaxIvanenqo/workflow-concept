@@ -72,7 +72,6 @@ jobs:
         - name: Get updated version
           run: |
             VERSION=$(mvn org.apache.maven.plugins:maven-help-plugin:3.1.0:evaluate -Dexpression=project.version -q -DforceStdout)
-            echo $VERSION
             echo "::set-output name=version::$VERSION"
           shell: bash
 
@@ -85,7 +84,7 @@ jobs:
             git checkout -b release/$VERSION
             git fetch
             git commit -a -m "build release $MVN_ARTIFACT_ID-$VERSION"
-            git push origin release-$VERSION
+            git push origin release/$VERSION
             echo "::set-output name=version::release-$VERSION"
 
   deploy:
