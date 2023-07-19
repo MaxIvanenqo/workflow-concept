@@ -40,6 +40,11 @@ jobs:
           cache: maven
           
       - uses: ./.github/workflows/reusable/composite/maven-settings
+        with: 
+            REPOSITORY_URL: ${{ secrets.REPOSITORY_URL }} 
+            SERVER_ID: ${{ secrets.SERVER_ID }}
+            SERVER_USERNAME: ${{ secrets.SERVER_USERNAME }}
+            SERVER_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
         
       - name: Build & Test
         run: |
@@ -72,6 +77,11 @@ jobs:
           git config --local user.name "github-actions[bot]"
       
       - uses: ./.github/workflows/reusable/composite/maven-settings
+        with: 
+            REPOSITORY_URL: ${{ secrets.REPOSITORY_URL }} 
+            SERVER_ID: ${{ secrets.SERVER_ID }}
+            SERVER_USERNAME: ${{ secrets.SERVER_USERNAME }}
+            SERVER_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
       
       - name: Create next dev iteration
         run: |
