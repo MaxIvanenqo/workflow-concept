@@ -1,10 +1,5 @@
 #!/bin/bash
 
-REPOSITORY_URL: ${{inputs.REPOSITORY_URL}}
-SERVER_ID: ${{inputs.SERVER_ID}}
-SERVER_USERNAME: ${{inputs.SERVER_USERNAME}}
-SERVER_PASSWORD: ${{ inputs.GITHUB_TOKEN }}
-
 SETTINGS_XML=$(cat << EOF
 <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
                         http://maven.apache.org/xsd/settings-1.0.0.xsd">
