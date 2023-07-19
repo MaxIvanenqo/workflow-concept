@@ -26,6 +26,7 @@ jobs:
         uses: ./.github/workflows/composite/dump-context
         
       - name: Setup environment and variables
+        id: var-setup
         uses: ./.github/workflows/composite/setup
       
       - name: Create maven settings
