@@ -98,7 +98,7 @@ jobs:
           uses: ./.github/workflows/composite/deploy
           with:
             PROFILE: "release"
-            BRANCH: "release/${{ needs.stage-release.outputs.version }}"
+            BRANCH: "origin/release/${{ needs.stage-release.outputs.version }}"
             REPOSITORY_URL: ${{ secrets.REPOSITORY_URL }}
             SERVER_ID: ${{ secrets.SERVER_ID }}
             SERVER_USERNAME: ${{ secrets.SERVER_USERNAME }}
