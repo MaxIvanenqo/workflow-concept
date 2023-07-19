@@ -12,6 +12,11 @@ on:
             type: string
             required: true
             default: 'dev'
+        ENVIRONMENT: 
+            description: Selected environment
+            type: string
+            required: true
+            default: 'dev'
 
 permissions:
   contents: write
@@ -19,6 +24,7 @@ permissions:
 
 jobs:
   deploy:
+    environment: ${{ inputs.ENVIRONMENT }}
     name: Deploy package
     runs-on: ubuntu-latest
     steps: 
