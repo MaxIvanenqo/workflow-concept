@@ -17,3 +17,6 @@ runs:
           java-version: ${{ steps.var-setup.outputs.JAVA_VERSION }}
           distribution: ${{ steps.var-setup.outputs.JAVA_DISTRIBUTION }}
           cache: maven
+    - name: Create maven settings
+      run: ./.github/workflows/reusable/scripts/create-maven-settings.sh ${{ secrets.REPOSITORY_URL }} ${{ secrets.SERVER_ID }} ${{ secrets.SERVER_USERNAME }} ${{ secrets.GITHUB_TOKEN }}
+      shell: bash
