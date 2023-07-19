@@ -1,0 +1,5 @@
+#!/bin/bash
+MAVEN_PROFILE_NAME="release"
+SERVER_USERNAME=$2
+SERVER_PASSWORD=$3
+./.github/workflows/reusable/setup-env-var/setup.sh $MAVEN_PROFILE_NAME $SERVER_USERNAME $SERVER_PASSWORD
