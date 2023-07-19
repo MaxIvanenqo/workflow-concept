@@ -127,7 +127,7 @@ jobs:
         run: |
           git fetch
           git pull --all
-          git rebase origin/${{needs.stage-release.outputs.version}}
+          git rebase origin/release-${{needs.stage-release.outputs.version}}
           
       - name: Create new release tag
         run: |
