@@ -128,6 +128,7 @@ jobs:
         run: |
           git fetch
           git pull --all
+          git checkout dev
           git rebase origin/release-${{needs.stage-release.outputs.version}}
           
       - name: Create new release tag
