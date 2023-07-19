@@ -17,19 +17,14 @@ on:
             type: string
             required: true
             default: 'dev'
+    secrets:
         REPOSITORY_URL:
-            description: Repository to push the package
-            type: string
             required: true
         SERVER_ID:
-            description: Branch to deploy from
-            type: string
             required: true
         SERVER_USERNAME: 
-            type: string
             required: true
         SERVER_PASSWORD: 
-            type: string
             required: true
 
 permissions:
