@@ -1,0 +1,6 @@
+name: 'MS teams integration'
+runs:
+  using: "composite"
+  steps:
+    - name: connect and send notification
+      run: echo "Integration to be implemented"
