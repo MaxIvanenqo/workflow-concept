@@ -42,7 +42,7 @@ jobs:
       - name: Create maven settings
         run: ./.github/workflows/reusable/scripts/create-maven-settings.sh
         env:
-          SERVER_ID:        ${{ secrets.SERVER }}
+          SERVER_ID:        ${{ secrets.SERVER_ID }}
           REPOSITORY_URL:   ${{ secrets.REPOSITORY_URL }} 
           SERVER_USERNAME:  ${{ secrets.SERVER_USERNAME }}
           SERVER_PASSWORD:  ${{ secrets.GITHUB_TOKEN }}
