@@ -53,10 +53,10 @@ jobs:
 
       - uses: ./.github/workflows/reusable/composite/maven-settings
         with: 
-            REPOSITORY_URL: ${{ inputs.REPOSITORY_URL }} 
-            SERVER_ID: ${{ inputs.SERVER_ID }}
-            SERVER_USERNAME: ${{ inputs.SERVER_USERNAME }}
-            SERVER_PASSWORD: ${{ inputs.GITHUB_TOKEN }}
+            REPOSITORY_URL: ${{ secrets.REPOSITORY_URL }} 
+            SERVER_ID: ${{ secrets.SERVER_ID }}
+            SERVER_USERNAME: ${{ secrets.SERVER_USERNAME }}
+            SERVER_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Configure git bot
         run: | 
