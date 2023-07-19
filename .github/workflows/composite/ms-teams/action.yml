@@ -3,4 +3,5 @@ runs:
   using: "composite"
   steps:
     - name: connect and send notification
+      shell: bash
       run: echo "Integration to be implemented"

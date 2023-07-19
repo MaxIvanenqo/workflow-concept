@@ -3,4 +3,5 @@ runs:
   using: "composite"
   steps:
     - name: Create maven settings
+      shell: bash
       run: echo "Integration to be implemented"
