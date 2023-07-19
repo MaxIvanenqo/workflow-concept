@@ -74,5 +74,5 @@ jobs:
     name: Send deploy error message to Teams channel
     needs: deploy
     if: failure()
-    uses: ./.github/workflows/teams-int.yml
+    uses: ./.github/workflows/composite/ms-teams.yml
     
