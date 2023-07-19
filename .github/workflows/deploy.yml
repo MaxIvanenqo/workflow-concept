@@ -59,7 +59,7 @@ jobs:
         run: |
           git fetch
           git checkout ${{inputs.BRANCH}}
-          mvn -P ${{ inputs.PROFILE }} clean deploy -DaltDeploymentRepository=github::default::${{secrets.REPOSITORY_URL}} ${{ secrets.MAVEN_OPTS }}
+          mvn -P ${{ inputs.PROFILE }} clean deploy ${{ secrets.MAVEN_OPTS }}
 
   failed-deploy-notification:
     name: Send deploy error message to Teams channel
