@@ -18,6 +18,7 @@ runs:
   steps:
     - name: Create maven settings
       run: ./.github/workflows/reusable/scripts/create-maven-settings.sh
+      shell: bash
       env:
           SERVER_ID:        ${{ inputs.SERVER_ID }}
           REPOSITORY_URL:   ${{ inputs.REPOSITORY_URL }} 
