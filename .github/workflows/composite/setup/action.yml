@@ -3,6 +3,7 @@ description: 'Setup variables and environment'
 runs:
   using: "composite"
   steps:
+    - uses: actions/checkout@v3
     - name: Dump workflow context
       uses: ./.github/workflows/dump-context.yml
     
