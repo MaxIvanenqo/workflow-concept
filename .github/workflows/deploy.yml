@@ -3,10 +3,15 @@ name: Deploy
 on:
   workflow_call:
     inputs:
-        activeProfile:
+        PROFILE:
             description: Profile to be activated in maven
             type: string
             required: true
+        BRANCH:
+            description: Branch to deploy from
+            type: string
+            required: true
+            default: 'dev'
 
 permissions:
   contents: write
@@ -31,24 +36,23 @@ jobs:
           distribution: ${{ steps.var-setup.outputs.JAVA_DISTRIBUTION }}
           cache: maven
 
-      - name: Create maven settings
-        run: ./.github/workflows/reusable/scripts/create-maven-settings.sh
-        env:
-          SERVER_ID:        ${{ secrets.SERVER }}
-          REPOSITORY_URL:   ${{ secrets.REPOSITORY_URL }} 
-          SERVER_USERNAME:  ${{ secrets.SERVER_USERNAME }}
-          SERVER_PASSWORD:  ${{ secrets.GITHUB_TOKEN }}
+      - uses: ./.github/workflows/reusable/composite/maven-settings
+        with: 
+            REPOSITORY_URL: ${{ secrets.REPOSITORY_URL }} 
+            SERVER_ID: ${{ secrets.SERVER_ID }}
+            SERVER_USERNAME: ${{ secrets.SERVER_USERNAME }}
+            SERVER_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Configure git bot
         run: | 
             git config --local user.email "github-actions[bot]@users.noreply.github.com"
             git config --local user.name "github-actions[bot]"
 
-      - name: Deploy package to ${{ env.SERVER }} 
+      - name: Deploy package to ${{ secrets.SERVER_ID }} 
         run: |
           git fetch
-          git checkout ${{inputs.branch}}
-          mvn -P ${{ inputs.activeProfile }} clean deploy -DaltDeploymentRepository=github::default::${{secrets.REPOSITORY_URL}} ${{ secrets.MAVEN_OPTS }}
+          git checkout ${{inputs.BRANCH}}
+          mvn -P ${{ inputs.PROFILE }} clean deploy -DaltDeploymentRepository=github::default::${{secrets.REPOSITORY_URL}} ${{ secrets.MAVEN_OPTS }}
 
   failed-deploy-notification:
     name: Send deploy error message to Teams channel
