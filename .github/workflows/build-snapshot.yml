@@ -35,16 +35,18 @@ jobs:
       
   deploy:
     needs: build
-    uses: ./.github/workflows/composite/deploy
-    with:
-      PROFILE: "snapshot"
-      BRANCH: "dev"
-      ENVIRONMENT: "dev"
-    secrets:
-      REPOSITORY_URL: ${{ secrets.REPOSITORY_URL }}
-      SERVER_ID: ${{ secrets.SERVER_ID }}
-      SERVER_USERNAME: ${{ secrets.SERVER_USERNAME }}
-      SERVER_PASSWORD: ${{ secrets.SERVER_PASSWORD }}
+    runs-on: ubuntu-latest
+    environment: dev
+    steps:
+      - uses: ./.github/workflows/composite/deploy
+        with:
+          PROFILE: "snapshot"
+          BRANCH: "dev"
+          ENVIRONMENT: "dev"
+          REPOSITORY_URL: ${{ secrets.REPOSITORY_URL }}
+          SERVER_ID: ${{ secrets.SERVER_ID }}
+          SERVER_USERNAME: ${{ secrets.SERVER_USERNAME }}
+          SERVER_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
          
   next-snapshot-iteration:
     runs-on: ubuntu-latest
