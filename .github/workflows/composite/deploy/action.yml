@@ -1,0 +1,87 @@
+name: 'Deploy'
+description: 'Deploy to server'
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/checkout@v3
+    - uses: ./.github/workflows/composite/dump-context
+    - uses: ./.github/workflows/composite/setup
+    
+
+
+on:
+  workflow_call:
+    inputs:
+        PROFILE:
+            description: Profile to be activated in maven
+            type: string
+            required: true
+        BRANCH:
+            description: Branch to deploy from
+            type: string
+            required: true
+            default: 'dev'
+        ENVIRONMENT: 
+            description: Selected environment
+            type: string
+            required: true
+            default: 'dev'
+    secrets:
+        REPOSITORY_URL:
+            required: true
+        SERVER_ID:
+            required: true
+        SERVER_USERNAME: 
+            required: true
+        SERVER_PASSWORD: 
+            required: true
+
+permissions:
+  contents: write
+  packages: write
+
+jobs:
+  deploy:
+    environment: ${{ inputs.ENVIRONMENT }}
+    name: Deploy package
+    runs-on: ubuntu-latest
+    steps: 
+      - uses: actions/checkout@v3
+
+      - name: Setup environmental variables
+        id: var-setup
+        run: source ./.github/workflows/reusable/setup-env-var/snapshot-env
+        shell: bash
+
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: ${{ steps.var-setup.outputs.JAVA_VERSION }}
+          distribution: ${{ steps.var-setup.outputs.JAVA_DISTRIBUTION }}
+          cache: maven
+
+      - uses: ./.github/workflows/reusable/composite/maven-settings
+        with: 
+            REPOSITORY_URL: ${{ secrets.REPOSITORY_URL }} 
+            SERVER_ID: ${{ secrets.SERVER_ID }}
+            SERVER_USERNAME: ${{ secrets.SERVER_USERNAME }}
+            SERVER_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Configure git bot
+        run: | 
+            cat /home/runner/.m2/settings.xml
+            git config --local user.email "github-actions[bot]@users.noreply.github.com"
+            git config --local user.name "github-actions[bot]"
+
+      - name: Deploy package to ${{ secrets.SERVER_ID }} 
+        run: |
+          git fetch
+          git checkout ${{inputs.BRANCH}}
+          mvn -P ${{ inputs.PROFILE }} clean deploy
+
+  failed-deploy-notification:
+    name: Send deploy error message to Teams channel
+    needs: deploy
+    if: failure()
+    uses: ./.github/workflows/composite/ms-teams
+    
