@@ -3,6 +3,11 @@ description: 'Setup variables and environment'
 runs:
   using: "composite"
   steps:
+    - name: Dump workflow context
+      uses: ./.github/workflows/dump-context.yml
+      
+    - uses: actions/checkout@v3
+    
     - name: setup variables
       id: var-setup
       run: |
@@ -10,7 +15,8 @@ runs:
         SERVER_USERNAME=$2
         SERVER_PASSWORD=$3
         ./.github/workflows/reusable/setup-env-var/setup.sh $MAVEN_PROFILE_NAME $SERVER_USERNAME $SERVER_PASSWORD
-      shell: bash  
+      shell: bash
+      
     - name: setup JDK
       uses: actions/setup-java@v3
       with:
