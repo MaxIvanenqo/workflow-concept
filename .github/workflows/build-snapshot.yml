@@ -22,6 +22,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: dev
     steps: 
+      - uses: actions/checkout@v3
       - uses: ./.github/workflows/composite/setup
       - name: Build & Test
         run: |
@@ -46,6 +47,7 @@ jobs:
     needs: deploy
     if: success()
     steps: 
+      - uses: actions/checkout@v3
       - uses: ./.github/workflows/composite/setup
       - name: Create next dev iteration
         run: |
