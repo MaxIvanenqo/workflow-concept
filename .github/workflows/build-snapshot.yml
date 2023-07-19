@@ -42,11 +42,14 @@ jobs:
       - name: Create maven settings
         run: ./.github/workflows/reusable/scripts/create-maven-settings.sh
         env:
-          PROFILE: "snapshot"
-  
+          SERVER_ID:        ${{ secrets.SERVER }}
+          REPOSITORY_URL:   ${{ secrets.REPOSITORY_URL }} 
+          SERVER_USERNAME:  ${{ secrets.SERVER_USERNAME }}
+          SERVER_PASSWORD:  ${{ secrets.GITHUB_TOKEN }}
+          
       - name: Build & Test
         run: |
-          mvn -P ${{ env.PROFILE }} clean install ${{ secrets.MAVEN_OPTS }}
+          mvn -P snapshot clean install ${{ steps.var-setup.outputs.MAVEN_OPTS }}
       
   deploy:
     if: github.event.pull_request.merged == true
@@ -77,28 +80,24 @@ jobs:
       - name: Create maven settings
         run: ./.github/workflows/reusable/scripts/create-maven-settings.sh
         env:
-          PROFILE: "snapshot"
-          REPOSITORY_ID: "snapshot"
-          REPOSITORY_SNAPSHOTS_ENABLED: true
-          REPOSITORY_RELEASES_ENABLED: false
-          REPOSITORY_URL: ${{env.REPOSITORY_URL}} 
-          SERVER_ID: ${{env.SERVER}}
-          SERVER_USERNAME: ${{env.SERVER_USERNAME}}
-          SERVER_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+          SERVER_ID:        ${{ secrets.SERVER }}
+          REPOSITORY_URL:   ${{ secrets.REPOSITORY_URL }} 
+          SERVER_USERNAME:  ${{ secrets.SERVER_USERNAME }}
+          SERVER_PASSWORD:  ${{ secrets.GITHUB_TOKEN }}
       
-      - name: Commit next DEV iteration
+      - name: Create next dev iteration
         run: |
-          
-          mvn -P snapshot build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.nextIncrementalVersion}-SNAPSHOT
-          
-          MVN_ARTIFACT_ID=$(./.github/workflows/reusable/scripts/get-artifact.sh)
-          VERSION=$(./.github/workflows/reusable/scripts/get-version.sh)
-          MAJOR=$(cut -d'.' -f1 <<<"$VERSION") MINOR=$(cut -d'.' -f2 <<<"$VERSION")
-        
-          mvn -P snapshot versions:update-parent -DparentVersion=[$MAJOR.$MINOR.0-SNAPSHOT,$MAJOR.$MINOR.999-SNAPSHOT] -DallowSnapshots=true -DgenerateBackupPoms=false
+           mvn -P snapshot build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.nextIncrementalVersion}-SNAPSHOT
+           MVN_ARTIFACT_ID=$(./.github/workflows/reusable/scripts/get-artifact.sh)
+           VERSION=$(./.github/workflows/reusable/scripts/get-version.sh)
+           MAJOR=$(cut -d'.' -f1 <<<"$VERSION") MINOR=$(cut -d'.' -f2 <<<"$VERSION")
+           mvn -P snapshot versions:update-parent -DparentVersion=[$MAJOR.$MINOR.0-SNAPSHOT,$MAJOR.$MINOR.999-SNAPSHOT] -DallowSnapshots=true -DgenerateBackupPoms=false
          
+      - name: Commit & push
+        run: |
           git commit -am "set next snapshot $VERSION"
-          git push origin dev --follow-tags
+          git push origin dev
+          
   sonar:
     name: Analyse
     needs: build
