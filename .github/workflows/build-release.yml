@@ -1,169 +1,169 @@
-name: Build & Deploy Release
+# name: Build & Deploy Release
 
-on:
-  workflow_dispatch:
+# on:
+#   workflow_dispatch:
 
-permissions:
-  contents: write
-  packages: write
+# permissions:
+#   contents: write
+#   packages: write
 
-env:
-  SERVER: "github"
-  PROFILE: "release"
-  MAVEN_OPTS: -DgenerateBackupPoms=false -Dsurefire.skipTests=false
-  SERVER_USERNAME: "MaxIvanenqo"
-  MAVEN_RESOLVE_RANGES_OPTS: -DallowMajorUpdates=false -DallowMinorUpdates=false -DallowIncrementalUpdates=true -DallowSnapshots=false -DgenerateBackupPoms=false
-  MAVEN_SET_VERSION_OPTS: -DremoveSnapshot=true -DprocessParent=true -DprocessAllModules=true -DprocessDependencies=true -DprocessPlugins=false -DgenerateBackupsPoms=false -DgroupId=com.example.project
-  REPOSITORY_URL: "https://maven.pkg.github.com/MaxIvanenqo/workflow-concept"
+# env:
+#   SERVER: "github"
+#   PROFILE: "release"
+#   MAVEN_OPTS: -DgenerateBackupPoms=false -Dsurefire.skipTests=false
+#   SERVER_USERNAME: "MaxIvanenqo"
+#   MAVEN_RESOLVE_RANGES_OPTS: -DallowMajorUpdates=false -DallowMinorUpdates=false -DallowIncrementalUpdates=true -DallowSnapshots=false -DgenerateBackupPoms=false
+#   MAVEN_SET_VERSION_OPTS: -DremoveSnapshot=true -DprocessParent=true -DprocessAllModules=true -DprocessDependencies=true -DprocessPlugins=false -DgenerateBackupsPoms=false -DgroupId=com.example.project
+#   REPOSITORY_URL: "https://maven.pkg.github.com/MaxIvanenqo/workflow-concept"
 
-jobs:
-  dump:
-    name: Pre-job
-    uses: ./.github/workflows/dump-context.yml    
+# jobs:
+#   dump:
+#     name: Pre-job
+#     uses: ./.github/workflows/dump-context.yml    
 
-  build:
-    name: Build & Test
-    runs-on: ubuntu-latest
-    environment: prod
-    steps: 
-      - uses: actions/checkout@v3
+#   build:
+#     name: Build & Test
+#     runs-on: ubuntu-latest
+#     environment: prod
+#     steps: 
+#       - uses: actions/checkout@v3
 
-      - name: Set up JDK
-        uses: actions/setup-java@v3
-        with:
-          java-version: '11'
-          distribution: 'zulu'
-          cache: maven
+#       - name: Set up JDK
+#         uses: actions/setup-java@v3
+#         with:
+#           java-version: '11'
+#           distribution: 'zulu'
+#           cache: maven
 
-      - name: Generate maven settings file
-        uses: ./.github/workflows/reusable/composite/maven-settings
-        with: 
-            REPOSITORY_URL: ${{ secrets.REPOSITORY_URL }} 
-            SERVER_ID: ${{ secrets.SERVER_ID }}
-            SERVER_USERNAME: ${{ secrets.SERVER_USERNAME }}
-            SERVER_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+#       - name: Generate maven settings file
+#         uses: ./.github/workflows/reusable/composite/maven-settings
+#         with: 
+#             REPOSITORY_URL: ${{ secrets.REPOSITORY_URL }} 
+#             SERVER_ID: ${{ secrets.SERVER_ID }}
+#             SERVER_USERNAME: ${{ secrets.SERVER_USERNAME }}
+#             SERVER_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
             
-      - name: Clean & verify
-        run: |
-          mvn -P ${{ env.PROFILE }} clean verify ${{ env.MAVEN_OPTS }}
+#       - name: Clean & verify
+#         run: |
+#           mvn -P ${{ env.PROFILE }} clean verify ${{ env.MAVEN_OPTS }}
 
-  sonar:
-    needs: build
-    name: Analyse with Sonar
-    if: success()
-    uses: ./.github/workflows/sonar.yml
+#   sonar:
+#     needs: build
+#     name: Analyse with Sonar
+#     if: success()
+#     uses: ./.github/workflows/sonar.yml
 
-  stage-release:
-    needs: build
-    if: success()
-    name: Stage Release
-    outputs: 
-      version: ${{steps.stage.outputs.version}}
-    runs-on: ubuntu-latest
-    environment: prod
-    steps:
-      - uses: actions/checkout@v3
-      - name: Set up JDK
-        uses: actions/setup-java@v3
-        with:
-          java-version: '11'
-          distribution: 'zulu'
-          cache: maven
+#   stage-release:
+#     needs: build
+#     if: success()
+#     name: Stage Release
+#     outputs: 
+#       version: ${{steps.stage.outputs.version}}
+#     runs-on: ubuntu-latest
+#     environment: prod
+#     steps:
+#       - uses: actions/checkout@v3
+#       - name: Set up JDK
+#         uses: actions/setup-java@v3
+#         with:
+#           java-version: '11'
+#           distribution: 'zulu'
+#           cache: maven
 
-      - name: Generate maven settings file
-        uses: ./.github/workflows/reusable/composite/maven-settings
-        with: 
-            REPOSITORY_URL: ${{ secrets.REPOSITORY_URL }} 
-            SERVER_ID: ${{ secrets.SERVER_ID }}
-            SERVER_USERNAME: ${{ secrets.SERVER_USERNAME }}
-            SERVER_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+#       - name: Generate maven settings file
+#         uses: ./.github/workflows/reusable/composite/maven-settings
+#         with: 
+#             REPOSITORY_URL: ${{ secrets.REPOSITORY_URL }} 
+#             SERVER_ID: ${{ secrets.SERVER_ID }}
+#             SERVER_USERNAME: ${{ secrets.SERVER_USERNAME }}
+#             SERVER_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Resolve release version
-        run: |
-          VERSION=$(./.github/workflows/reusable/scripts/get-version.sh)
-          MAJOR=$(cut -d'.' -f1 <<<"$VERSION") MINOR=$(cut -d'.' -f2 <<<"$VERSION") 
-          mvn -P ${{ env.PROFILE }} versions:update-parent -DparentVersion=[$MAJOR.$MINOR.0,$MAJOR.$MINOR.999] ${{ env.MAVEN_OPTS }}
-          mvn -P ${{ env.PROFILE }} versions:resolve-ranges ${{ env.MAVEN_OPTS }} ${{ env.MAVEN_RESOLVE_RANGES_OPTS }}
-          mvn -P ${{ env.PROFILE }} versions:set ${{ env.MAVEN_OPTS }} ${{ env.MAVEN_SET_VERSION_OPTS }}
+#       - name: Resolve release version
+#         run: |
+#           VERSION=$(./.github/workflows/reusable/scripts/get-version.sh)
+#           MAJOR=$(cut -d'.' -f1 <<<"$VERSION") MINOR=$(cut -d'.' -f2 <<<"$VERSION") 
+#           mvn -P ${{ env.PROFILE }} versions:update-parent -DparentVersion=[$MAJOR.$MINOR.0,$MAJOR.$MINOR.999] ${{ env.MAVEN_OPTS }}
+#           mvn -P ${{ env.PROFILE }} versions:resolve-ranges ${{ env.MAVEN_OPTS }} ${{ env.MAVEN_RESOLVE_RANGES_OPTS }}
+#           mvn -P ${{ env.PROFILE }} versions:set ${{ env.MAVEN_OPTS }} ${{ env.MAVEN_SET_VERSION_OPTS }}
 
-      - name: Configure git bot
-        run: | 
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
+#       - name: Configure git bot
+#         run: | 
+#           git config --local user.email "github-actions[bot]@users.noreply.github.com"
+#           git config --local user.name "github-actions[bot]"
 
-      - name: Stage release
-        id: stage
-        run: |
-          MVN_ARTIFACT_ID=$(./.github/workflows/reusable/scripts/get-artifact.sh)
-          VERSION=$(./.github/workflows/reusable/scripts/get-version.sh)
-          git checkout -b release-$VERSION
-          git fetch
-          git commit -a -m "build release $MVN_ARTIFACT_ID-$VERSION"
-          git push origin release-$VERSION
-          echo "::set-output name=version::release-$VERSION"
+#       - name: Stage release
+#         id: stage
+#         run: |
+#           MVN_ARTIFACT_ID=$(./.github/workflows/reusable/scripts/get-artifact.sh)
+#           VERSION=$(./.github/workflows/reusable/scripts/get-version.sh)
+#           git checkout -b release-$VERSION
+#           git fetch
+#           git commit -a -m "build release $MVN_ARTIFACT_ID-$VERSION"
+#           git push origin release-$VERSION
+#           echo "::set-output name=version::release-$VERSION"
 
-  deploy-release:
-    needs: stage-release
-    name: Deploy Release ${{needs.stage-release.outputs.version}}
-    uses: ./.github/workflows/deploy.yml
-    with:
-      PROFILE: "release"
-      ENVIRONMENT: "prod"
-      BRANCH: ${{needs.stage-release.outputs.version}}
+#   deploy-release:
+#     needs: stage-release
+#     name: Deploy Release ${{needs.stage-release.outputs.version}}
+#     uses: ./.github/workflows/deploy.yml
+#     with:
+#       PROFILE: "release"
+#       ENVIRONMENT: "prod"
+#       BRANCH: ${{needs.stage-release.outputs.version}}
   
-  post-deploy:
-    needs: [deploy-release, stage-release]
-    if: success()
-    name: Set next dev iteration
-    runs-on: ubuntu-latest
-    environment: prod
-    steps:
-      - uses: actions/checkout@v3
-      - name: Set up JDK
-        uses: actions/setup-java@v3
-        with:
-          java-version: '11'
-          distribution: 'zulu'
-          cache: maven
+#   post-deploy:
+#     needs: [deploy-release, stage-release]
+#     if: success()
+#     name: Set next dev iteration
+#     runs-on: ubuntu-latest
+#     environment: prod
+#     steps:
+#       - uses: actions/checkout@v3
+#       - name: Set up JDK
+#         uses: actions/setup-java@v3
+#         with:
+#           java-version: '11'
+#           distribution: 'zulu'
+#           cache: maven
 
-      - name: Generate maven settings file
-        uses: ./.github/workflows/reusable/composite/maven-settings
-        with: 
-            REPOSITORY_URL: ${{ secrets.REPOSITORY_URL }} 
-            SERVER_ID: ${{ secrets.SERVER_ID }}
-            SERVER_USERNAME: ${{ secrets.SERVER_USERNAME }}
-            SERVER_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+#       - name: Generate maven settings file
+#         uses: ./.github/workflows/reusable/composite/maven-settings
+#         with: 
+#             REPOSITORY_URL: ${{ secrets.REPOSITORY_URL }} 
+#             SERVER_ID: ${{ secrets.SERVER_ID }}
+#             SERVER_USERNAME: ${{ secrets.SERVER_USERNAME }}
+#             SERVER_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
             
-      - name: Configure git bot
-        run: | 
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
+#       - name: Configure git bot
+#         run: | 
+#           git config --local user.email "github-actions[bot]@users.noreply.github.com"
+#           git config --local user.name "github-actions[bot]"
 
-      - name: Checkout to DEV
-        run: |
-          git fetch
-          git pull --all
-          git rebase origin/${{needs.stage-release.outputs.version}}
+#       - name: Checkout to DEV
+#         run: |
+#           git fetch
+#           git pull --all
+#           git rebase origin/${{needs.stage-release.outputs.version}}
           
-      - name: Create new release tag
-        run: |
-          MVN_ARTIFACT_ID=$(./.github/workflows/reusable/scripts/get-artifact.sh)
-          VERSION=$(./.github/workflows/reusable/scripts/get-version.sh)
-          TAG="release-$MVN_ARTIFACT_ID-$VERSION"
-          git tag -a "$TAG" -m "noissue tag release $VERSION"
-          echo "::set-output name=release-tag::$TAG"
-          git push origin dev --follow-tags
+#       - name: Create new release tag
+#         run: |
+#           MVN_ARTIFACT_ID=$(./.github/workflows/reusable/scripts/get-artifact.sh)
+#           VERSION=$(./.github/workflows/reusable/scripts/get-version.sh)
+#           TAG="release-$MVN_ARTIFACT_ID-$VERSION"
+#           git tag -a "$TAG" -m "noissue tag release $VERSION"
+#           echo "::set-output name=release-tag::$TAG"
+#           git push origin dev --follow-tags
 
-      - name: Tag & Commit next DEV iteration
-        run: |
+#       - name: Tag & Commit next DEV iteration
+#         run: |
           
-          mvn -P ${{ env.PROFILE }} build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.nextIncrementalVersion}-SNAPSHOT
+#           mvn -P ${{ env.PROFILE }} build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.nextIncrementalVersion}-SNAPSHOT
           
-          MVN_ARTIFACT_ID=$(./.github/workflows/reusable/scripts/get-artifact.sh)
-          VERSION=$(./.github/workflows/reusable/scripts/get-version.sh)
-          MAJOR=$(cut -d'.' -f1 <<<"$VERSION") MINOR=$(cut -d'.' -f2 <<<"$VERSION")
+#           MVN_ARTIFACT_ID=$(./.github/workflows/reusable/scripts/get-artifact.sh)
+#           VERSION=$(./.github/workflows/reusable/scripts/get-version.sh)
+#           MAJOR=$(cut -d'.' -f1 <<<"$VERSION") MINOR=$(cut -d'.' -f2 <<<"$VERSION")
         
-          mvn -P ${{ env.PROFILE }} versions:update-parent -DparentVersion=[$MAJOR.$MINOR.0-SNAPSHOT,$MAJOR.$MINOR.999-SNAPSHOT] -DallowSnapshots=true -DgenerateBackupPoms=false
+#           mvn -P ${{ env.PROFILE }} versions:update-parent -DparentVersion=[$MAJOR.$MINOR.0-SNAPSHOT,$MAJOR.$MINOR.999-SNAPSHOT] -DallowSnapshots=true -DgenerateBackupPoms=false
          
-          git commit -am "noissue set next snapshot $VERSION"
-          git push origin dev
+#           git commit -am "noissue set next snapshot $VERSION"
+#           git push origin dev
