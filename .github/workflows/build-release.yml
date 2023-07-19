@@ -65,7 +65,7 @@ jobs:
           run: |
             VERSION=$(./.github/workflows/scripts/get-version.sh)
             MAJOR=$(cut -d'.' -f1 <<<"$VERSION") MINOR=$(cut -d'.' -f2 <<<"$VERSION") 
-            mvn versions:set -DremoveSnapshot=true -DprocessParent=true -DprocessAllModules=true -DprocessDependencies=true -DprocessPlugins=false -DgenerateBackupPoms=false -DgroupId=com.example.project
+            mvn versions:set ${{ steps.var-setup.outputs.MAVEN_SET_VERSION_OPTS }} ${{ steps.var-setup.outputs.MAVEN_OPTS }}
             mvn versions:commit
           shell: bash
 
@@ -88,7 +88,7 @@ jobs:
 
   deploy:
     needs: stage-release
-    name: Deploy snapshot to Prod server
+    name: Deploy release to Prod server
     runs-on: ubuntu-latest
     outputs: 
         branch: ${{ steps.deploy-branch.outputs.branch }}
