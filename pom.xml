@@ -52,7 +52,7 @@
 
 	<distributionManagement>
 	   <repository>
-	     <id>snapshot</id>
+	     <id>github</id>
 	     <name>GitHub MaxIvanenqo Apache Maven Packages</name>
 	     <url>https://maven.pkg.github.com/MaxIvanenqo/workflow-concept</url>
 	   </repository>
