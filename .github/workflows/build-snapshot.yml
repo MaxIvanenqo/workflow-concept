@@ -16,18 +16,13 @@ permissions:
   contents: write
   
 jobs:
-  dump:
-    name: Dump workflow context
-    uses: ./.github/workflows/dump-context.yml    
 
   build:
     name: Build & Test
     runs-on: ubuntu-latest
     environment: dev
     steps: 
-      - uses: actions/checkout@v3
       - uses: ./.github/workflows/composite/setup
-  
       - name: Build & Test
         run: |
           mvn -P snapshot clean install ${{ steps.var-setup.outputs.MAVEN_OPTS }}
@@ -35,7 +30,7 @@ jobs:
   deploy:
     needs: build
     uses: ./.github/workflows/deploy.yml
-    with: 
+    with:
       PROFILE: "snapshot"
       BRANCH: "dev"
       ENVIRONMENT: "dev"
@@ -51,32 +46,7 @@ jobs:
     needs: deploy
     if: success()
     steps: 
-      - uses: actions/checkout@v3
-      
-      - name: Setup environmental variables
-        id: var-setup
-        run: source ./.github/workflows/reusable/setup-env-var/snapshot-env
-        env: 
-          SERVER_USERNAME: ${{ secrets.SERVER_USERNAME}}
-          SERVER_PASSWORD: ${{ secrets.GITHUB_TOKEN}}
-        shell: bash
-      
-      - name: Set up JDK
-        uses: actions/setup-java@v3
-        with:
-          java-version: '11'
-          distribution: 'zulu'
-          cache: maven
-      
-      - name: Configure git bot
-        run: | 
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
-      
-      - name: Create maven settings
-        run: ./.github/workflows/reusable/scripts/create-maven-settings.sh ${{ secrets.REPOSITORY_URL }} ${{ secrets.SERVER_ID }} ${{ secrets.SERVER_USERNAME }} ${{ secrets.GITHUB_TOKEN }}
-        shell: bash
-      
+      - uses: ./.github/workflows/composite/setup
       - name: Create next dev iteration
         run: |
            mvn -P snapshot build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.nextIncrementalVersion}-SNAPSHOT
