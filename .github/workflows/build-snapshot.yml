@@ -26,10 +26,6 @@ jobs:
     environment: dev
     steps: 
       - uses: actions/checkout@v3
-      - id: foo
-        uses: ./.github/workflows/reusable/composite/maven-settings
-        with:
-          ENVIRONMENT: 'dev'
 
       - name: Setup environmental variables
         id: var-setup
@@ -42,15 +38,9 @@ jobs:
           java-version: ${{ steps.var-setup.outputs.JAVA_VERSION }}
           distribution: ${{ steps.var-setup.outputs.JAVA_DISTRIBUTION }}
           cache: maven
-      
-      - name: Create maven settings
-        run: ./.github/workflows/reusable/scripts/create-maven-settings.sh
-        env:
-          SERVER_ID:        ${{ secrets.SERVER_ID }}
-          REPOSITORY_URL:   ${{ secrets.REPOSITORY_URL }} 
-          SERVER_USERNAME:  ${{ secrets.SERVER_USERNAME }}
-          SERVER_PASSWORD:  ${{ secrets.GITHUB_TOKEN }}
           
+      - uses: ./.github/workflows/reusable/composite/maven-settings
+        
       - name: Build & Test
         run: |
           mvn -P snapshot clean install ${{ steps.var-setup.outputs.MAVEN_OPTS }}
@@ -81,13 +71,7 @@ jobs:
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
       
-      - name: Create maven settings
-        run: ./.github/workflows/reusable/scripts/create-maven-settings.sh
-        env:
-          SERVER_ID:        ${{ secrets.SERVER }}
-          REPOSITORY_URL:   ${{ secrets.REPOSITORY_URL }} 
-          SERVER_USERNAME:  ${{ secrets.SERVER_USERNAME }}
-          SERVER_PASSWORD:  ${{ secrets.GITHUB_TOKEN }}
+      - uses: ./.github/workflows/reusable/composite/maven-settings
       
       - name: Create next dev iteration
         run: |
