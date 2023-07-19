@@ -2,6 +2,10 @@ name: 'Sonarqube report'
 runs:
   using: "composite"
   steps:
-    - name: Create maven settings
+    - name: Request a report
+      shell: bash
+      run: echo "Integration to be implemented"
+
+    - name: Share report to MS teams
       shell: bash
       run: echo "Integration to be implemented"
