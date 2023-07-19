@@ -83,7 +83,7 @@ jobs:
 
   deploy:
     needs: stage-release
-    name: Deploy snapshot to Int server
+    name: Deploy snapshot to Prod server
     runs-on: ubuntu-latest
     outputs: 
         branch: ${{ steps.deploy-branch.outputs.branch }}
@@ -95,7 +95,7 @@ jobs:
           run: |
             echo "::set-output name=branch::release-$(./.github/workflows/scripts/get-version.sh)"
             echo "::set-output name=artifactId::release-$(./.github/workflows/scripts/get-artifact.sh)"
-        - name: Deploy to Int server
+        - name: Deploy to Prod server
           uses: ./.github/workflows/composite/deploy
           with:
             PROFILE: "release"
