@@ -68,6 +68,12 @@ jobs:
             mvn -P release versions:set ${{ steps.var-setup.outputs.MAVEN_SET_VERSION_OPTS }} ${{ steps.var-setup.outputs.MAVEN_OPTS }}
           shell: bash
 
+        - name: Get updated version
+          run: |
+            VERSION=$(mvn org.apache.maven.plugins:maven-help-plugin:3.1.0:evaluate -Dexpression=project.version -q -DforceStdout)
+            echo "Updated version is $VERSION"
+          shell: bash
+
         - name: Stage release
           id: stage
           run: |
