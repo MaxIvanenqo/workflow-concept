@@ -95,7 +95,7 @@ jobs:
           git config --local user.name "github-actions[bot]"
       
       - uses: ./.github/workflows/reusable/composite/maven-settings
-        with: 
+        env: 
             REPOSITORY_URL: ${{ secrets.REPOSITORY_URL }} 
             SERVER_ID: ${{ secrets.SERVER_ID }}
             SERVER_USERNAME: ${{ secrets.SERVER_USERNAME }}
