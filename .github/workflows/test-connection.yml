@@ -15,6 +15,6 @@ jobs:
       - run: | 
             echo "${AZURE_VM_PRIVATE_KEY}" > /home/runner/.ssh/id_rsa
             chmod 600 ~/.ssh/id_rsa
-            ssh -i ~/.ssh/id_rsa maxivanenqo@137.117.196.11
+            ssh -i /home/runner/.ssh/id_rsa maxivanenqo@137.117.196.11
         shell: bash
      
