@@ -14,6 +14,6 @@ jobs:
       - run: | 
             eval "$(ssh-agent -s)"
             ssh-add - <<< "${{ secrets.AZURE_VM_PRIVATE_KEY }}"
-            ssh maxivanenqo@137.117.196.11
+            ssh -i maxivanenqo@137.117.196.11
         shell: bash
      
