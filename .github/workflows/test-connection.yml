@@ -10,9 +10,9 @@ jobs:
     environment: dev
     steps: 
       - uses: actions/checkout@v3
+
       - run: | 
-            echo "Start"
-            sudo apt-get install sshpass -y
-            sshpass -p ${{secrets.AZURE_VM_PASSWORD}} ssh ${{secrets.AZURE_VM_USERNAME}}@137.117.196.11
+            ssh-add - <<< "${{ secrets.AZURE_VM_PRIVATE_KEY }}"
+            ssh -i maxivanenqo@137.117.196.11
         shell: bash
      
