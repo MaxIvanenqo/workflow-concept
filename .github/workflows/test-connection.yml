@@ -13,6 +13,6 @@ jobs:
       - run: | 
             echo "Start"
             sudo apt-get install sshpass -y
-            sshpass -p ${{secrets.AZURE_VM_PASSWORD}} ssh ${{secrets.AZURE_VM_USERNAME}}@$${{ secrets.AZURE_VM_IP_ADDR }}
+            sshpass -p ${{secrets.AZURE_VM_PASSWORD}} ssh ${{secrets.AZURE_VM_USERNAME}}@137.117.196.11
         shell: bash
      
