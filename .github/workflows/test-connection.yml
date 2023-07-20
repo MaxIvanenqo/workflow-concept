@@ -16,6 +16,6 @@ jobs:
             mkdir -p /home/runner/.ssh
             echo "${AZURE_VM_PRIVATE_KEY}" > /home/runner/.ssh/id_rsa
             chmod 400 ~/.ssh/id_rsa
-            ssh -i /home/runner/.ssh/id_rsa maxivanenqo@137.117.196.11
+            ssh -o StrictHostKeyChecking=no -i /home/runner/.ssh/id_rsa maxivanenqo@137.117.196.11
         shell: bash
 
