@@ -10,9 +10,10 @@ jobs:
     environment: dev
     steps: 
       - uses: actions/checkout@v3
-
+        env:
+            AZURE_VM_PRIVATE_KEY: ${{ secrets.AZURE_VM_PRIVATE_KEY }}
       - run: | 
-            echo "${AZURE_VM_PRIVATE_KEY}" > ~/.ssh/id_rsa
+            echo "${AZURE_VM_PRIVATE_KEY}" > /home/runner/.ssh/id_rsa
             chmod 600 ~/.ssh/id_rsa
             ssh -i ~/.ssh/id_rsa maxivanenqo@137.117.196.11
         shell: bash
