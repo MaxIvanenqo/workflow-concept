@@ -12,5 +12,7 @@ jobs:
       - uses: actions/checkout@v3
       - run: | 
             echo "Start"
-
+            sudo apt-get install sshpass -y
+            
+        shell: bash
      
