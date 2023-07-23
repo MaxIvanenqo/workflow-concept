@@ -28,8 +28,8 @@ runs:
     - name: setup JDK
       uses: actions/setup-java@v3
       with:
-        java-version: ${{ steps.var-setup.outputs.JAVA_VERSION }}
-        distribution: ${{ steps.var-setup.outputs.JAVA_DISTRIBUTION }}
+        java-version: ${{ env.JAVA_VERSION }}
+        distribution: ${{ env.JAVA_DISTRIBUTION }}
         cache: maven
       
     - name: Configure git bot
