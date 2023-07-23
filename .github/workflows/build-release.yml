@@ -83,6 +83,7 @@ jobs:
             echo $VERSION
             git checkout -b release/$VERSION
             git fetch
+            git pull
             git commit -a -m "build release $MVN_ARTIFACT_ID-$VERSION"
             git push origin release/$VERSION
             echo "::set-output name=version::$VERSION"
