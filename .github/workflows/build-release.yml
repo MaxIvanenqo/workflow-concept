@@ -72,7 +72,7 @@ jobs:
         - name: Get updated version
           run: |
             VERSION=$(mvn org.apache.maven.plugins:maven-help-plugin:3.1.0:evaluate -Dexpression=project.version -q -DforceStdout)
-            echo "::set-output name=version::$VERSION"
+            echo "version=$VERSION" >> "$GITHUB_OUTPUT"
           shell: bash
 
         - name: Stage release
@@ -85,7 +85,6 @@ jobs:
             git commit -a -m "build release $MVN_ARTIFACT_ID-$VERSION"
             git checkout -b $BRANCH
             git push origin $BRANCH
-            echo "::set-output name=version::$VERSION"
 
   deploy:
     needs: stage-release
@@ -137,19 +136,15 @@ jobs:
           VERSION=${{needs.stage-release.outputs.version}}
           TAG="release-$MVN_ARTIFACT_ID-$VERSION"
           git tag -a "$TAG" -m "noissue tag release $VERSION"
-          echo "::set-output name=release-tag::$TAG"
+          echo "release-tag=$TAG" >> "$GITHUB_OUTPUT"
           git push origin dev --follow-tags
 
       - name: Tag & Commit next DEV iteration
         run: |
           
           mvn -P release build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.nextIncrementalVersion}-SNAPSHOT
-          
           MVN_ARTIFACT_ID=$(./.github/workflows/scripts/get-artifact.sh)
           VERSION=$(./.github/workflows/scripts/get-version.sh)
           MAJOR=$(cut -d'.' -f1 <<<"$VERSION") MINOR=$(cut -d'.' -f2 <<<"$VERSION")
-        
-          # mvn -P release versions:update-parent -DparentVersion=[$MAJOR.$MINOR.0-SNAPSHOT,$MAJOR.$MINOR.999-SNAPSHOT] -DallowSnapshots=true -DgenerateBackupPoms=false
-         
           git commit -am "noissue set next snapshot $VERSION"
           git push origin dev

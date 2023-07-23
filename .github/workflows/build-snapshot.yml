@@ -77,9 +77,6 @@ jobs:
           MVN_ARTIFACT_ID=$(./.github/workflows/scripts/get-artifact.sh)
           VERSION=$(./.github/workflows/scripts/get-version.sh)
           MAJOR=$(cut -d'.' -f1 <<<"$VERSION") MINOR=$(cut -d'.' -f2 <<<"$VERSION")
-           
-          #  mvn -P snapshot versions:update-parent -DparentVersion=[$MAJOR.$MINOR.0-SNAPSHOT,$MAJOR.$MINOR.999-SNAPSHOT] -DallowSnapshots=true -DgenerateBackupPoms=false
-           
           git commit -am "set next snapshot $VERSION"
           git push origin dev
           
