@@ -80,7 +80,7 @@ jobs:
           run: |
             MVN_ARTIFACT_ID=$(./.github/workflows/scripts/get-artifact.sh)
             VERSION=$(mvn org.apache.maven.plugins:maven-help-plugin:3.1.0:evaluate -Dexpression=project.version -q -DforceStdout)
-            $BRANCH = release/$VERSION
+            $BRANCH=release/$VERSION
             git fetch
             git checkout -b $BRANCH
             git pull origin $BRANCH
