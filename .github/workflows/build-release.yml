@@ -83,8 +83,8 @@ jobs:
             BRANCH=release/$VERSION
             git fetch
             git checkout -b $BRANCH
-            git add . # Add this line
-            git commit -m "Prepare for release $MVN_ARTIFACT_ID-$VERSION" # And this line
+            git add .
+            git commit -m "Prepare for release $MVN_ARTIFACT_ID-$VERSION"
             git pull --rebase origin $BRANCH
             git commit -a -m "build release $MVN_ARTIFACT_ID-$VERSION"
             git push origin $BRANCH
