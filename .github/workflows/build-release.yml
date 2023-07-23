@@ -84,9 +84,8 @@ jobs:
             git fetch
             git checkout -b $BRANCH
             git pull --rebase origin $BRANCH
-            git add .
             git commit -a -m "build release $MVN_ARTIFACT_ID-$VERSION"
-            git push origin $BRANCH
+            git push origin release/$VERSION
             echo "::set-output name=version::$VERSION"
 
   deploy:
