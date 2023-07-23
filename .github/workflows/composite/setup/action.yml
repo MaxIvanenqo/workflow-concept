@@ -1,5 +1,18 @@
 name: 'Setup'
 description: 'Setup variables and environment'
+outputs:
+  JAVA_VERSION:
+    description: 'Java version'
+  JAVA_DISTRIBUTION:
+    description: 'Java distribution'
+  MAVEN_GROUP_ID:
+    description: 'Maven group ID'
+  MAVEN_OPTS:
+    description: 'Maven options'
+  MAVEN_SET_VERSION_OPTS:
+    description: 'Maven set version options'
+  MAVEN_PROFILE_NAME:
+    description: 'Maven profile name'
 runs:
   using: "composite"
   steps:
