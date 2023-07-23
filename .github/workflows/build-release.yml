@@ -80,7 +80,7 @@ jobs:
           run: |
             MVN_ARTIFACT_ID=$(./.github/workflows/scripts/get-artifact.sh)
             VERSION=$(mvn org.apache.maven.plugins:maven-help-plugin:3.1.0:evaluate -Dexpression=project.version -q -DforceStdout)
-            BRANCH=release-$VERSION
+            BRANCH=release/$VERSION
             git fetch
             git commit -a -m "build release $MVN_ARTIFACT_ID-$VERSION"
             git checkout -b $BRANCH
@@ -98,7 +98,7 @@ jobs:
           uses: ./.github/workflows/composite/deploy
           with:
             PROFILE: "release"
-            BRANCH: "origin/release-${{ needs.stage-release.outputs.version }}"
+            BRANCH: "origin/release/${{ needs.stage-release.outputs.version }}"
             REPOSITORY_URL: ${{ secrets.REPOSITORY_URL }}
             SERVER_ID: ${{ secrets.SERVER_ID }}
             SERVER_USERNAME: ${{ secrets.SERVER_USERNAME }}
@@ -129,7 +129,7 @@ jobs:
           git fetch
           git pull --all
           git checkout dev
-          git rebase release-${{needs.stage-release.outputs.version}}
+          git rebase release/${{needs.stage-release.outputs.version}}
           
       - name: Create new release tag
         run: |
