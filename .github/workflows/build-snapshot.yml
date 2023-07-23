@@ -3,7 +3,7 @@ name: Build Snapshot
 on:
   push:
     branches:
-      'dev-*'
+      ['dev-latest', 'feature/*']
   pull_request_target:
       types:
         - closed
