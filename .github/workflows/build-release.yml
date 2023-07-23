@@ -44,7 +44,7 @@ jobs:
     if: success()
     name: Stage Release
     outputs: 
-      version: ${{ steps.stage.outputs.version }}
+      version: ${{ steps.get-release-version.outputs.version }}
     runs-on: ubuntu-latest
     environment: prod
     steps:
@@ -70,6 +70,7 @@ jobs:
           shell: bash
 
         - name: Get updated version
+          id: get-release-version
           run: |
             VERSION=$(mvn org.apache.maven.plugins:maven-help-plugin:3.1.0:evaluate -Dexpression=project.version -q -DforceStdout)
             echo "version=$VERSION" >> "$GITHUB_OUTPUT"
