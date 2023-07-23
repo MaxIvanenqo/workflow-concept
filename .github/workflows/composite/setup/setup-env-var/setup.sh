@@ -2,7 +2,7 @@
 JAVA_VERSION=11
 JAVA_DISTRIBUTION="zulu"
 MAVEN_GROUP_ID="com.example.project"
-MAVEN_OPTS="-DgenerateBackupPoms=false -Dsurefire.skipTests=false --no-transfer-progress"
+MAVEN_OPTS="-DgenerateBackupPoms=false -Dsurefire.skipTests=false"
 MAVEN_RESOLVE_RANGES_OPTS="-DallowMajorUpdates=false -DallowMinorUpdates=false -DallowIncrementalUpdates=true -DallowSnapshots=false -DgenerateBackupPoms=false"
 
 MAVEN_PROFILE_NAME=$1

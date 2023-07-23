@@ -36,7 +36,7 @@ jobs:
         
       - name: Build & Test
         run: |
-          mvn -P snapshot clean install ${{ steps.var-setup.outputs.MAVEN_OPTS }}
+          mvn -P snapshot clean install ${{ steps.var-setup.outputs.MAVEN_OPTS }} --no-transfer-progress
       
   deploy:
     needs: build
