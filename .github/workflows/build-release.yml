@@ -28,7 +28,7 @@ jobs:
             
         - name: Clean & verify
           run: |
-            mvn -P release clean verify ${{ steps.var-setup.outputs.MAVEN_OPTS }} --no-transfer-progress
+            mvn -P release clean verify ${{ steps.var-setup.outputs.MAVEN_OPTS }}  --no-transfer-progress
   
   sonar:
     runs-on: ubuntu-latest

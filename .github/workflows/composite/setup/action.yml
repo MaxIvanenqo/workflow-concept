@@ -13,13 +13,20 @@ outputs:
     description: 'Maven set version options'
   MAVEN_PROFILE_NAME:
     description: 'Maven profile name'
+inputs: 
+  PROFILE: 
+    type: string
+    required: false
+    description: maven profile
+    default: snapshot
+
 runs:
   using: "composite"
   steps:
     - name: setup variables
       id: var-setup
       run: |
-        MAVEN_PROFILE_NAME="release"
+        MAVEN_PROFILE_NAME="${{inputs.PROFILE}}"
         SERVER_USERNAME=$2
         SERVER_PASSWORD=$3
         ./.github/workflows/composite/setup/setup-env-var/setup.sh $MAVEN_PROFILE_NAME $SERVER_USERNAME $SERVER_PASSWORD
@@ -34,6 +41,8 @@ runs:
       
     - name: Configure git bot
       run: | 
+        echo "environment"
+        echo ${{env.ENVIRONMENT}}
         git config --local user.email "github-actions[bot]@users.noreply.github.com"
         git config --local user.name "github-actions[bot]"
       shell: bash
