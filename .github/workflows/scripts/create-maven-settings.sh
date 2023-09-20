@@ -42,13 +42,6 @@ SETTINGS_XML=$(cat << EOF
       </repositories>
     </profile>
   </profiles>
-  <servers>
-    <server>
-      <id>${SERVER_ID}</id>
-      <username>${SERVER_USERNAME}</username>
-      <password>${SERVER_PASSWORD}</password>
-    </server>
-  </servers>
 </settings>
 EOF
 )
