@@ -40,4 +40,4 @@ runs:
       run: |
         git fetch
         git checkout ${{ inputs.BRANCH }}
-        mvn -P ${{ inputs.PROFILE }} clean deploy -Dmaven.deploy.deployAtEnd=true
+        mvn -P ${{ inputs.PROFILE }} clean deploy -Dmaven.deploy.deployAtEnd=true -DaltDeploymentRepository=github::default::https://maven.pkg.github.com/MaxIvanenqo/workflow-concept
